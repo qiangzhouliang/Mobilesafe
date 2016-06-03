@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class SplashActivity extends Activity {
     private static final int MSG_UPDATE_DIALOG = 1;
     private TextView tv_splash_versionname;
     private String code,apkurl,des;
+    private int statrTime;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -57,7 +59,8 @@ public class SplashActivity extends Activity {
         builder.setPositiveButton("升级", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                //3 下载最新版本
+                download();
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -72,6 +75,13 @@ public class SplashActivity extends Activity {
         //显示对话框
         //builder.create().show();//两种方式，效果一样
         builder.show();
+    }
+
+    /**
+     * 3 下载最新版本操作
+     */
+    private void download() {
+
     }
 
     /**
@@ -103,6 +113,8 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
                 Message message = new Message();
+                //在连接之前获取一个时间
+                statrTime = (int) System.currentTimeMillis();
                 //1.1 连接服务器
                 try {
                     //1.1.1 设置连接路径
@@ -153,6 +165,15 @@ public class SplashActivity extends Activity {
                     e.printStackTrace();
                 }finally {
                     //不管有没有异常，都会执行
+                    //处理连接外网连接时间的处理
+                    //在连接成功之后再去获取一个时间
+                    int endTime = (int) System.currentTimeMillis();
+                    //比较两个时间的时间差，如果小于两秒，睡两秒，大于两秒，不睡
+                    int dTime = endTime - statrTime;
+                    if(dTime < 2000){
+                        //睡两秒钟
+                        SystemClock.sleep(2000 - dTime);//始终都是睡两秒钟
+                    }
                     handler.sendMessage(message);
                 }
             }
