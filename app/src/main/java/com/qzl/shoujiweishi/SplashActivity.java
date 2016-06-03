@@ -3,6 +3,8 @@ package com.qzl.shoujiweishi;
 import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -20,8 +22,20 @@ import java.net.URL;
 
 public class SplashActivity extends Activity {
 
+    private static final int MSG_UPDATE_DIALOG = 1;
     private TextView tv_splash_versionname;
     private String code,apkurl,des;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_UPDATE_DIALOG:
+                    //弹出对话框
+
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +54,7 @@ public class SplashActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Message message = new Message();
                 //1.1 连接服务器
                 try {
                     //1.1.1 设置连接路径
@@ -68,6 +83,17 @@ public class SplashActivity extends Activity {
                         apkurl = jsonObject.getString("apkurl");
                         des = jsonObject.getString("des");
                         System.out.println("code = "+code+"apkurl = "+apkurl+"des = "+des);
+                        //1.2 查看是否有最新版本
+                        //判断服务器返回的版本号和当前应用程序的版本号是否一致,一致，就表示没有最新版本，不一致，就表示有最新版本
+                        if(code.equals(getVersionName())){
+                            //没有最新版本
+
+                        }else {
+                            //有最新版本
+                            //2 弹出对话框，提醒用户更新版本
+                            message.what = MSG_UPDATE_DIALOG;
+                            handler.sendMessage(message);
+                        }
                     }else {
                         //连接失败
                         System.out.println("连接失败。。。。。");
@@ -78,6 +104,9 @@ public class SplashActivity extends Activity {
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }finally {
+                    //不管有没有异常，都会执行
+
                 }
             }
         }).start();
