@@ -1,6 +1,9 @@
 package com.qzl.shoujiweishi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -31,11 +34,53 @@ public class SplashActivity extends Activity {
             switch (msg.what){
                 case MSG_UPDATE_DIALOG:
                     //弹出对话框
-
+                    showdialog();
                     break;
             }
         }
     };
+
+    /**
+     * 用来弹出对话框
+     */
+    private void showdialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //设置对话框不能消失
+        builder.setCancelable(false);
+        //设置标题
+        builder.setTitle("新版本：" + code);
+        //设置对话框图标
+        builder.setIcon(R.mipmap.ic_launcher);
+        //设置对话框的描述信息
+        builder.setMessage(des);
+        //设置升级取消的按钮
+        builder.setPositiveButton("升级", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //1 隐藏对话框
+                dialog.dismiss();
+                //2 跳转到主界面
+                enterHome();
+            }
+        });
+        //显示对话框
+        //builder.create().show();//两种方式，效果一样
+        builder.show();
+    }
+
+    /**
+     * 跳转到主界面
+     */
+    private void enterHome() {
+        Intent intent = new Intent(this,);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +132,11 @@ public class SplashActivity extends Activity {
                         //判断服务器返回的版本号和当前应用程序的版本号是否一致,一致，就表示没有最新版本，不一致，就表示有最新版本
                         if(code.equals(getVersionName())){
                             //没有最新版本
-
                         }else {
                             //有最新版本
                             //2 弹出对话框，提醒用户更新版本
                             message.what = MSG_UPDATE_DIALOG;
-                            handler.sendMessage(message);
+
                         }
                     }else {
                         //连接失败
@@ -106,7 +150,7 @@ public class SplashActivity extends Activity {
                     e.printStackTrace();
                 }finally {
                     //不管有没有异常，都会执行
-
+                    handler.sendMessage(message);
                 }
             }
         }).start();
