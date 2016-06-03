@@ -1,0 +1,71 @@
+一 svn
+    svn checkout //检出
+    svn update  //更新
+    svn commit  //提交
+    svn add  //添加
+
+    角色
+        student 密码123  地址：https://zlQ/svn/Mobilesafe    zlQ：得用我电脑的ＩＰ地址
+        qzl  密码 ***********
+
+二 splash界面的作用
+    1 展示logo，欢迎界面，品牌效应
+    2 项目初始化，数据库copy，免登陆操作
+    3 提醒用户更新版本
+    4 广告的展示
+
+    小步快跑原则：一个月做出beta版app，抢占市场，一个星期更新一个版本，前十个版本在积攒人气，11版本开始盈利
+
+三 代码包结构划分方式
+    1 按照代码类型划分
+        .activity
+        .adapter
+        .ui
+        处理类.engine
+        数据：.net
+        数据：.db\.db.dao
+        工具类：.utils/.tools
+        服务：.services
+        广播接收者：.receiver
+
+    2 按照业务类型划分
+        目的：方便后期维护和更新的项目
+        业务模块比较独立
+        黑马 办公软件 www.itheima.com
+        教学模块： com.itheima.teach
+        招生模块： com.itheima.student
+        财务模块： com.itheima.momey
+
+四 splash界面搭建
+    1 textview的阴影效果
+    <!--layout_centerInParent在父控件的中间位置
+        shadow :
+        shadowColor:设置阴影颜色
+        shadowDx:关于x轴的偏移量
+        shadowRadius:偏移角度
+        -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="版本号1.0"
+            android:layout_centerInParent="true"
+            android:id="@+id/textView"
+            android:shadowColor="#ffff00"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"/>
+
+    2 去除标题栏的操作
+        1》在values目录的styles.xml文件中增加属性
+        <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+                <!-- 去除标题栏样式-->
+                <item name="windowNoTitle">true</item>
+                <!-- Customize your theme here. -->
+                <item name="colorPrimary">@color/colorPrimary</item>
+                <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+                <item name="colorAccent">@color/colorAccent</item>
+            </style>
+            2》在清单文件文件中设置theme属性是我们工程的AppTheme
+
+获取版本号
+    id：驼峰式命名： 空间类型_控件的所在位置_控件表示的逻辑内容
