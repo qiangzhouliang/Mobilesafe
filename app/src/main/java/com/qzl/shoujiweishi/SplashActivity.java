@@ -78,7 +78,10 @@ public class SplashActivity extends Activity {
      * 跳转到主界面
      */
     private void enterHome() {
-        Intent intent = new Intent(this,);
+        Intent intent = new Intent(this,HomeActivity.class);
+        startActivity(intent);
+        //移除splash界面
+        finish();
     }
 
     @Override
