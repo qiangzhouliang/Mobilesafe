@@ -24,11 +24,13 @@
 
     <!--
         numColumns:设置每行显示的个数
-
+        verticalSpacing : 设置每行与每行之间的距离
     -->
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/gridView_home_gridview"
-        android:numColumns="3"/>
+        android:numColumns="3"
+        android:verticalSpacing="10dp"
+        android:layout_marginTop="10dp"/>
 </LinearLayout>
