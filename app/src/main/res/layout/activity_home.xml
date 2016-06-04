@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qzl.shoujiweishi.HomeActivity">
+    tools:context="com.qzl.shoujiweishi.HomeActivity"
+    android:orientation="vertical">
+    <!--layout_gravity : 设置控件在父控件中的位置
+        gravity ： 设置控件内的内容位置
+        layout_marginTop : 距离某控件的距离
+        paddingTop ：距离控件内边框的距离,距离textView控件内顶边框的距离
+    -->
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="这是我们的主界面"
+        android:text="功能列表"
         android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-</RelativeLayout>
+        android:background="#8866ff00"
+        android:gravity="center_horizontal"
+        android:textSize="22sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"/>
+
+    <!--
+        numColumns:设置每行显示的个数
+
+    -->
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/gridView_home_gridview"
+        android:numColumns="3"/>
+</LinearLayout>
