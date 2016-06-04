@@ -6,18 +6,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.qzl.shoujiweishi.utils.StreamUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -27,7 +36,13 @@ import java.net.URL;
 public class SplashActivity extends Activity {
 
     private static final int MSG_UPDATE_DIALOG = 1;
-    private TextView tv_splash_versionname;
+    private static final int MSG_ENTER_HOME = 2;
+    private static final int MSG_SERVER_ERROR = 3;
+    private static final int MSG_URL_ERROR = 4;
+    private static final int MSG_IO_ERROR = 5;
+    private static final int MSG_JSON_ERROR = 6;
+
+    private TextView tv_splash_versionname,tv_splash_plan;
     private String code,apkurl,des;
     private int statrTime;
     private Handler handler = new Handler(){
@@ -37,6 +52,27 @@ public class SplashActivity extends Activity {
                 case MSG_UPDATE_DIALOG:
                     //弹出对话框
                     showdialog();
+                    break;
+                case MSG_ENTER_HOME:
+                    enterHome();
+                    break;
+                case MSG_SERVER_ERROR:
+                    //连接失败，服务器出现异常
+                    Toast.makeText(getApplicationContext(), "服务器异常", Toast.LENGTH_SHORT).show();
+                    enterHome();
+                    break;
+                case MSG_IO_ERROR:
+                    Toast.makeText(getApplicationContext(), "亲，网络没有连接..", Toast.LENGTH_SHORT).show();
+                    enterHome();
+                    break;
+                case MSG_URL_ERROR:
+                    //方便后期定位异常
+                    Toast.makeText(getApplicationContext(), "错误号："+MSG_URL_ERROR, Toast.LENGTH_SHORT).show();
+                    enterHome();
+                    break;
+                case MSG_JSON_ERROR:
+                    Toast.makeText(getApplicationContext(), "错误号："+MSG_JSON_ERROR, Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
             }
         }
@@ -81,7 +117,71 @@ public class SplashActivity extends Activity {
      * 3 下载最新版本操作
      */
     private void download() {
+        HttpUtils httpUtils = new HttpUtils();
+        //判断sd卡是否挂载
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            //url:新版本下载路径
+            //target：保存新版本目录
+            //callback：RequestCallBack
+            httpUtils.download(apkurl, "/mnt/sdcard/mobliesafe_2.apk", new RequestCallBack<File>() {
+                //下载成功调运
+                @Override
+                public void onSuccess(ResponseInfo<File> responseInfo) {
+                    //4 安装最新版本
+                    installAPK();
+                }
 
+                //下载失败
+                @Override
+                public void onFailure(HttpException e, String s) {
+
+                }
+
+                //显示当前下载进度的操作
+                //total ： 下载总进度
+                //current ： 下载当前进度
+                //isUploading ： 是否支持断点续传
+                @Override
+                public void onLoading(long total, long current, boolean isUploading) {
+                    super.onLoading(total, current, isUploading);
+                    //设置显示下载进度的textView可见，同时设置相应的下载进度
+                    tv_splash_plan.setVisibility(View.VISIBLE);//设置控件是否可见
+                    tv_splash_plan.setText(current + "/" + total);
+                }
+            });
+        }
+    }
+
+    /**
+     * 4 安装最新版本
+     */
+    private void installAPK() {
+        /**
+         *  <intent-filter>
+         <action android:name="android.intent.action.VIEW" />
+         <category android:name="android.intent.category.DEFAULT" />
+         <data android:scheme="content" /> //content : 从内容提供者中获取数据  content://
+         <data android:scheme="file" /> // file : 从文件中获取数据
+         <data android:mimeType="application/vnd.android.package-archive" />
+         </intent-filter>
+         */
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        //单独设置会相互覆盖
+        /*intent.setData(Uri.fromFile(new File("/mnt/sdcard/mobliesafe_2.apk")));
+        intent.setType("application/vnd.android.package-archive");*///这两种方法不能共存
+        intent.setDataAndType(Uri.fromFile(new File("/mnt/sdcard/mobliesafe_2.apk")),"application/vnd.android.package-archive");
+        //在当前activity退出时，会调运之前activity的onActivityResult方法
+        //requestCode : 请求码，用来标示是从哪个activity跳转过来的
+        // ABC a->c b->c ,c区分intent是从哪个activity传递过来的,这时候就要用到请求码了
+        startActivityForResult(intent,0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        enterHome();
     }
 
     /**
@@ -99,6 +199,7 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         tv_splash_versionname = (TextView) findViewById(R.id.tv_splash_versionname);
+        tv_splash_plan = (TextView) findViewById(R.id.tv_splash_plan);
         tv_splash_versionname.setText("版本号:"+getVersionName());
 
         update();
@@ -147,6 +248,7 @@ public class SplashActivity extends Activity {
                         //判断服务器返回的版本号和当前应用程序的版本号是否一致,一致，就表示没有最新版本，不一致，就表示有最新版本
                         if(code.equals(getVersionName())){
                             //没有最新版本
+                            message.what = MSG_ENTER_HOME;
                         }else {
                             //有最新版本
                             //2 弹出对话框，提醒用户更新版本
@@ -156,13 +258,17 @@ public class SplashActivity extends Activity {
                     }else {
                         //连接失败
                         System.out.println("连接失败。。。。。");
+                        message.what = MSG_SERVER_ERROR;
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                    message.what = MSG_URL_ERROR;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    message.what = MSG_IO_ERROR;
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    message.what = MSG_JSON_ERROR;
                 }finally {
                     //不管有没有异常，都会执行
                     //处理连接外网连接时间的处理
