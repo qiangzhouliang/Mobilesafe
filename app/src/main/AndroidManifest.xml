@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qzl.shoujiweishi">
+
     <!--
  package:应用在系统中的唯一标示
     versionCode:版本号
@@ -25,7 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>
