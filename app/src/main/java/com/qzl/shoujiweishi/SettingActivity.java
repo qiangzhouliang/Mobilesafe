@@ -1,6 +1,4 @@
 package com.qzl.shoujiweishi;
-
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -23,16 +21,17 @@ public class SettingActivity extends Activity {
         sp = getSharedPreferences("config", MODE_PRIVATE);
         sv_setting_update = (SettingView) findViewById(R.id.sv_setting_update);
         //初始化自定义控件中各个控件的值
-        sv_setting_update.setTitle("提示更新");
+        //sv_setting_update.setTitle("提示更新");
         //根据保存值，来初始化
         //defValue : 缺省的值
-        if (sp.getBoolean("update", true)) {
+        //使用了自定义组合控件，这儿不需要了这样设置了
+        /*if (sp.getBoolean("update", true)) {
             sv_setting_update.setDes("打开提示更新");
             sv_setting_update.setChecked(true);
         }else{
             sv_setting_update.setDes("关闭提示更新");
             sv_setting_update.setChecked(false);
-        }
+        }*/
         //设置自定义组合控件的点击事件
         //问题1:点击checkbox发现描述信息没有改变,原因:因为checkbox天生是有点击事件和获取焦点事件,当点击checkbox,这个checkbox就会执行他的点击事件
         //而不会执行条目的点击事件
@@ -45,14 +44,14 @@ public class SettingActivity extends Activity {
                 //根据checkbox之前的状态来改变checkbox的状态
                 if (sv_setting_update.isChecked()) {
                     //关闭提示更新
-                    sv_setting_update.setDes("提示更新已关闭");
+                    //sv_setting_update.setDes("提示更新已关闭");
                     sv_setting_update.setChecked(false);
                     //保存状态
                     edit.putBoolean("update", false);
                     //edit.apply();//保存到文件中,但是仅限于9版本之上,9版本之下保存到内存中的
                 }else{
                     //打开提示更新
-                    sv_setting_update.setDes("提示更新已打开");
+                    //sv_setting_update.setDes("提示更新已打开");
                     sv_setting_update.setChecked(true);
                     //保存状态
                     edit.putBoolean("update", true);

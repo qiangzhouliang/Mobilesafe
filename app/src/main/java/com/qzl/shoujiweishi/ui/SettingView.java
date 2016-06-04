@@ -13,6 +13,8 @@ public class SettingView extends RelativeLayout {
 	private TextView tv_setting_title;
 	private TextView tv_setting_des;
 	private CheckBox cb_setting_update;
+	private static String des_on;
+	private static String des_off;
 	//在代码中使用的时候调用
 	public SettingView(Context context) {
 		super(context);
@@ -25,9 +27,32 @@ public class SettingView extends RelativeLayout {
 		init();
 	}
 	//在布局文件中使用的时候调用
+	//AttributeSet:保存有控件的所有属性
 	public SettingView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
+		//通过AttributeSet获取控件属性,不能获取某一个值
+//		int count = attrs.getAttributeCount();//获取控件属性的个数
+//		System.out.println("属性的个数："+count);
+//		for (int i = 0; i < count; i++) {
+//			//attrs.getAttributeValue(i);//获取某个属性的值
+//			System.out.println("属性的值"+attrs.getAttributeValue(i));
+//		}
+
+		//通过命名空间和属性名称获取属性的值
+		//namespase : 命名空间
+		// name ： 属性名称
+		String title = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto", "text");
+		des_on = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto", "des_on");
+		des_off = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto", "des_off");
+		//给自定义组合控件的控件设置相应的值
+		//初始化控件的值
+		tv_setting_title.setText(title);
+		if(isChecked()){
+			tv_setting_des.setText(des_on);
+		}else {
+			tv_setting_des.setText(des_off);
+		}
 	}
 	/**
 	 * 添加控件
@@ -69,6 +94,12 @@ public class SettingView extends RelativeLayout {
 	public void setChecked(boolean isChecked){
 		//设置checkbox的状态
 		cb_setting_update.setChecked(isChecked);
+		//其实解释把sv_setting_update.setDes("打开提示更新");封装到了setChecked方法中
+		if(isChecked()){
+			tv_setting_des.setText(des_on);
+		}else {
+			tv_setting_des.setText(des_off);
+		}
 	}
 	/**
 	 * 获取checkbox的状态

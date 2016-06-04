@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    xmlns:qzl="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <!-- layout_gravity : 设置控件在父控件中的位置 
     	 gravity : 设置控件内的内容的位置
@@ -23,5 +24,8 @@
 	<com.qzl.shoujiweishi.ui.SettingView
 	    android:id="@+id/sv_setting_update"
 	    android:layout_width="match_parent"
+        qzl:text="提示更新"
+        qzl:des_on="提示更新已打开"
+        qzl:des_off="提示更新已关闭"
 	    android:layout_height="wrap_content" />
 </LinearLayout>
