@@ -63,5 +63,6 @@ public class HomeActivity extends AppCompatActivity {
             tv_itemhome_text.setText(names[position]);
             return view;
         }
+        
     }
 }
