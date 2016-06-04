@@ -23,16 +23,5 @@
 	<com.qzl.shoujiweishi.ui.SettingView
 	    android:id="@+id/sv_setting_update"
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    />
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+	    android:layout_height="wrap_content" />
 </LinearLayout>

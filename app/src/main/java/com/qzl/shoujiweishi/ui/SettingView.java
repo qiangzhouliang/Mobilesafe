@@ -76,12 +76,4 @@ public class SettingView extends RelativeLayout {
 	public boolean isChecked(){
 		return cb_setting_update.isChecked();//获取checkbox的状态
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -43,6 +44,7 @@ public class SplashActivity extends Activity {
     private static final int MSG_JSON_ERROR = 6;
 
     private TextView tv_splash_versionname,tv_splash_plan;
+    private SharedPreferences sp;
     private String code,apkurl,des;
     private int statrTime;
     private Handler handler = new Handler(){
@@ -175,7 +177,7 @@ public class SplashActivity extends Activity {
         //在当前activity退出时，会调运之前activity的onActivityResult方法
         //requestCode : 请求码，用来标示是从哪个activity跳转过来的
         // ABC a->c b->c ,c区分intent是从哪个activity传递过来的,这时候就要用到请求码了
-        startActivityForResult(intent,0);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -198,11 +200,24 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         tv_splash_versionname = (TextView) findViewById(R.id.tv_splash_versionname);
         tv_splash_plan = (TextView) findViewById(R.id.tv_splash_plan);
-        tv_splash_versionname.setText("版本号:"+getVersionName());
-
-        update();
+        tv_splash_versionname.setText("版本号:" + getVersionName());
+        if(sp.getBoolean("update",true)){
+            update();
+        }else {
+            //不能让主线程去睡两秒钟
+            //原因：主线程有一个渲染界面的操作，主线程睡两秒钟，就没有办法渲染界面了
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    SystemClock.sleep(2000);
+                    enterHome();
+                }
+            }.start();
+        }
     }
 
     /**

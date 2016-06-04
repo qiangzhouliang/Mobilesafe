@@ -13,17 +13,18 @@ import com.qzl.shoujiweishi.ui.SettingView;
 public class SettingActivity extends Activity {
 
     private SettingView sv_setting_update;
-    private SharedPreferences sp;
+    private SharedPreferences sp;//保存各种状态
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        //name : 保存信息的文件的名称
-        //mode : 权限
+        //name : 保存信息的文件的名称，config
+        //mode : 权限，MODE_PRIVATE（私有的）
         sp = getSharedPreferences("config", MODE_PRIVATE);
         sv_setting_update = (SettingView) findViewById(R.id.sv_setting_update);
         //初始化自定义控件中各个控件的值
         sv_setting_update.setTitle("提示更新");
+        //根据保存值，来初始化
         //defValue : 缺省的值
         if (sp.getBoolean("update", true)) {
             sv_setting_update.setDes("打开提示更新");
@@ -37,7 +38,6 @@ public class SettingActivity extends Activity {
         //而不会执行条目的点击事件
         //问题2:没有保存用户点击操作
         sv_setting_update.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Editor edit = sp.edit();
@@ -45,14 +45,14 @@ public class SettingActivity extends Activity {
                 //根据checkbox之前的状态来改变checkbox的状态
                 if (sv_setting_update.isChecked()) {
                     //关闭提示更新
-                    sv_setting_update.setDes("关闭提示更新");
+                    sv_setting_update.setDes("提示更新已关闭");
                     sv_setting_update.setChecked(false);
                     //保存状态
                     edit.putBoolean("update", false);
                     //edit.apply();//保存到文件中,但是仅限于9版本之上,9版本之下保存到内存中的
                 }else{
                     //打开提示更新
-                    sv_setting_update.setDes("打开提示更新");
+                    sv_setting_update.setDes("提示更新已打开");
                     sv_setting_update.setChecked(true);
                     //保存状态
                     edit.putBoolean("update", true);
