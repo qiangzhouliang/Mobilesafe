@@ -1,9 +1,12 @@
 package com.qzl.shoujiweishi;
 
 import android.content.Intent;
+import android.gesture.Gesture;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 public abstract class SetUpBaseActivity extends AppCompatActivity {
@@ -12,7 +15,32 @@ public abstract class SetUpBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_up_base);
+        //1、获取收拾识别器
+        GestureDetector gestureDetector = new GestureDetector(this,new MyOnGestureListener());
+    }
+    // base simple
+    private class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
+       //e1 : 按下的事件，保存有按下的坐标
+        //e2 : 抬起的事件，保存有抬起的坐标
+        //velocityX : 在x轴上移动的速度
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            //得到按下的坐标
+            float startX = e1.getRawX();
+            //得到抬起的坐标
+            float endX = e2.getRawX();
+            if((startX - endX) > 100){
+                //下一步
+                next_activity();
+
+            }
+            if((endX - startX) > 100){
+                //上一步
+                pre_activity();
+            }
+            //true : 事件执行 false ： 事件不执行
+            return true;
+        }
     }
     //按钮的点击事件操作
     public void pre(View view){
