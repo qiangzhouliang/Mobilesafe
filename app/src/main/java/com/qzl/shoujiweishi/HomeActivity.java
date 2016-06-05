@@ -1,5 +1,6 @@
 package com.qzl.shoujiweishi;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 public class HomeActivity extends AppCompatActivity {
 
     private GridView gridView_home_gridview;
+    AlertDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,11 @@ public class HomeActivity extends AppCompatActivity {
                 //position : 条目的位置  0-8
                 //根据条目的位置判断用户点击那个条目
                 switch (position) {
+                    case 0://手机防盗
+                        //跳转到手机防盗模块
+                        //判断用户是第一次点击的话设置密码，设置成功再次点击输入密码，密码正确才能进入手机防盗模块
+                        showSetPassWordDoalog();
+                    break;
                     case 8://设置中心
                         Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
                         startActivity(intent);
@@ -37,6 +46,35 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 设置密码对话框
+     */
+    private void showSetPassWordDoalog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //设置多花框不能消失
+        builder.setCancelable(false);
+        //将布局文件转化成view对象
+        View view = View.inflate(getApplicationContext(), R.layout.dialog_setpassword, null);
+        //初始化控件
+        EditText et_setpassword_password = (EditText) view.findViewById(R.id.et_setpassword_password);
+        EditText et_setpassword_confirm = (EditText) view.findViewById(R.id.et_setpassword_confirm);
+        Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
+        Button btn_cancle = (Button) view.findViewById(R.id.btn_concle);
+        //设置确定，取消按钮的点击事件
+        btn_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //隐藏对话框
+                dialog.dismiss();
+            }
+        });
+        builder.setView(view);
+        //显示对话框
+        //builder.show();
+        dialog = builder.create();
+        dialog.show();
     }
 
     private class Myadapter extends BaseAdapter{
