@@ -103,10 +103,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        builder.setView(view);
+        //builder.setView(view);//效果一样和dialog.setView
         //显示对话框
         //builder.show();
         dialog = builder.create();
+        //viewSpacingLeft : 距离对话框左内边框的距离
+        //viewSpacingTop : 距离对话框顶内边框的距离
+        //viewSpacingRight : 距离对话框右内边框的距离
+        //viewSpacingBottom : 距离对话框底内边框的距离
+        dialog.setView(view,0,0,0,0);
         dialog.show();
     }
 
