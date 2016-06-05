@@ -2,8 +2,10 @@ package com.qzl.shoujiweishi;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,18 +14,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity {
 
     private GridView gridView_home_gridview;
     AlertDialog dialog;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //加载布局文件
         setContentView(R.layout.activity_home);
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         gridView_home_gridview = (GridView) findViewById(R.id.gridView_home_gridview);
         gridView_home_gridview.setAdapter(new Myadapter());
         gridView_home_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -58,11 +62,39 @@ public class HomeActivity extends AppCompatActivity {
         //将布局文件转化成view对象
         View view = View.inflate(getApplicationContext(), R.layout.dialog_setpassword, null);
         //初始化控件
-        EditText et_setpassword_password = (EditText) view.findViewById(R.id.et_setpassword_password);
-        EditText et_setpassword_confirm = (EditText) view.findViewById(R.id.et_setpassword_confirm);
+        final EditText et_setpassword_password = (EditText) view.findViewById(R.id.et_setpassword_password);
+        final EditText et_setpassword_confirm = (EditText) view.findViewById(R.id.et_setpassword_confirm);
         Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
         Button btn_cancle = (Button) view.findViewById(R.id.btn_concle);
         //设置确定，取消按钮的点击事件
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               //设置密码
+               // 1获取密码输入款输入的内容
+                String passpord = et_setpassword_password.getText().toString().trim();
+                //2 判断密码是否为空
+                if(TextUtils.isEmpty(passpord)){ //null:没有内存，""：有内存地址但是没有内容
+                    Toast.makeText(getApplicationContext(), "请输入密码", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // 3 获取确认密码
+                String confrim_password = et_setpassword_confirm.getText().toString().trim();
+                //4 判断两次密码是否一致
+                if(passpord.equals(confrim_password)){
+                    //保存密码
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("passpord",passpord);
+                    editor.commit();
+                    //隐藏对话框
+                    dialog.dismiss();
+                    // 提示用户
+                    Toast.makeText(getApplicationContext(), "密码设置成功", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "两次密码输入不一致", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         btn_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +102,7 @@ public class HomeActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
         builder.setView(view);
         //显示对话框
         //builder.show();
