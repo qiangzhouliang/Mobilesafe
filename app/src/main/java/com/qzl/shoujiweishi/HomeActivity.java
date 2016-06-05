@@ -106,6 +106,8 @@ public class HomeActivity extends AppCompatActivity {
                     //4 判断两个密码是否一致
                     if(MD5Util.passwordMD5(password).equals(sp_password)){
                         //跳转到手机防盗界面
+                        Intent intent = new Intent(HomeActivity.this,LostfindActivity.class);
+                        startActivity(intent);
                         //隐藏对话框
                         dialog.dismiss();
                         //提醒用户
