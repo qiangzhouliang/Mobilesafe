@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qzl.shoujiweishi.utils.MD5Util;
+
 public class HomeActivity extends AppCompatActivity {
 
     private GridView gridView_home_gridview;
@@ -41,8 +43,14 @@ public class HomeActivity extends AppCompatActivity {
                     case 0://手机防盗
                         //跳转到手机防盗模块
                         //判断用户是第一次点击的话设置密码，设置成功再次点击输入密码，密码正确才能进入手机防盗模块
-                        showSetPassWordDoalog();
-                    break;
+                        if (TextUtils.isEmpty(sp.getString("password", ""))) {
+                            //设置密码
+                            showSetPassWordDoalog();
+                        } else {
+                            //输入密码
+                            showEnterPassWordDoalog();
+                        }
+                        break;
                     case 8://设置中心
                         Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
                         startActivity(intent);
@@ -52,10 +60,61 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    //输入密码对话框
+    private void showEnterPassWordDoalog() {
+        //第一步复制布局
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //设置多花框不能消失
+        builder.setCancelable(false);
+        //将布局文件转化成view对象
+        View view = View.inflate(getApplicationContext(), R.layout.dialog_enterpassword, null);
+        //初始化控件
+        final EditText et_setpassword_password = (EditText) view.findViewById(R.id.et_setpassword_password);
+        Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
+        Button btn_cancle = (Button) view.findViewById(R.id.btn_concle);
+        //第二步：复制显示及初始化相关操作
+        dialog = builder.create();
+        dialog.setView(view,0,0,0,0);
+        dialog.show();
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //判断密码输入是否正确
+                //1 获取输入密码
+                String password = et_setpassword_password.getText().toString().trim();
+                //2 判断密码是否为空
+                if(TextUtils.isEmpty(password)){
+                    Toast.makeText(getApplicationContext(), "请输入密码", Toast.LENGTH_SHORT).show();
+                }else {
+                   //3 获取保存的密码
+                    String sp_password = sp.getString("password", "");
+                    //4 判断两个密码是否一致
+                    if(MD5Util.passwordMD5(password).equals(sp_password)){
+                        //跳转到手机防盗界面
+                        //隐藏对话框
+                        dialog.dismiss();
+                        //提醒用户
+                        Toast.makeText(getApplicationContext(), "密码正确", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getApplicationContext(), "密码错误，请重新输入", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+        btn_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //隐藏对话框
+                dialog.dismiss();
+            }
+        });
+    }
+
     /**
      * 设置密码对话框
      */
     private void showSetPassWordDoalog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         //设置多花框不能消失
         builder.setCancelable(false);
@@ -72,19 +131,19 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                //设置密码
                // 1获取密码输入款输入的内容
-                String passpord = et_setpassword_password.getText().toString().trim();
+                String password = et_setpassword_password.getText().toString().trim();
                 //2 判断密码是否为空
-                if(TextUtils.isEmpty(passpord)){ //null:没有内存，""：有内存地址但是没有内容
+                if(TextUtils.isEmpty(password)){ //null:没有内存，""：有内存地址但是没有内容
                     Toast.makeText(getApplicationContext(), "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // 3 获取确认密码
                 String confrim_password = et_setpassword_confirm.getText().toString().trim();
                 //4 判断两次密码是否一致
-                if(passpord.equals(confrim_password)){
+                if(MD5Util.passwordMD5(password).equals(MD5Util.passwordMD5(confrim_password))){
                     //保存密码
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("passpord",passpord);
+                    editor.putString("password", MD5Util.passwordMD5(password));
                     editor.commit();
                     //隐藏对话框
                     dialog.dismiss();
