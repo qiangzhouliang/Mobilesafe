@@ -8,16 +8,26 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public abstract class SetUpBaseActivity extends AppCompatActivity {
+    private GestureDetector gestureDetector;
     //将每个界面中的上一步下一步按钮的操作，抽取到父类中
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //1、获取收拾识别器
-        GestureDetector gestureDetector = new GestureDetector(this,new MyOnGestureListener());
+        //要想要手势识别器生效，必须将手势识别器注册到屏幕的触摸事件中
+        gestureDetector= new GestureDetector(this,new MyOnGestureListener());
     }
+
+    //界面的触摸事件
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
     // base simple
     private class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
        //e1 : 按下的事件，保存有按下的坐标
@@ -25,10 +35,19 @@ public abstract class SetUpBaseActivity extends AppCompatActivity {
         //velocityX : 在x轴上移动的速度
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            //得到按下的坐标
+            //得到按下X的坐标
             float startX = e1.getRawX();
-            //得到抬起的坐标
+            //得到抬起X的坐标
             float endX = e2.getRawX();
+            //得到按下Y的坐标
+            float startY = e1.getRawY();
+            //得到抬起Y的坐标
+            float endY = e2.getRawY();
+            //判断是否是斜滑了
+            if((Math.abs(startY - endY)) > 50){
+                Toast.makeText(getApplicationContext(), "你小子又乱滑了，别闹了...", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             if((startX - endX) > 100){
                 //下一步
                 next_activity();
