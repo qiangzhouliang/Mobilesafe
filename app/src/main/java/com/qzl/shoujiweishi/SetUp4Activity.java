@@ -24,5 +24,6 @@ public class SetUp4Activity extends SetUpBaseActivity {
         Intent intent = new Intent(this, SetUp3Activity.class);
         startActivity(intent);
         finish();
+        overridePendingTransition(R.anim.setup_enter_pre, R.anim.setup_exit_pre);
     }
 }
