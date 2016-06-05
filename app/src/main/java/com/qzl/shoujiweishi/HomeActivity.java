@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
+    int count = 0;
     //输入密码对话框
     private void showEnterPassWordDoalog() {
         //第一步复制布局
@@ -72,6 +72,21 @@ public class HomeActivity extends AppCompatActivity {
         final EditText et_setpassword_password = (EditText) view.findViewById(R.id.et_setpassword_password);
         Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
         Button btn_cancle = (Button) view.findViewById(R.id.btn_concle);
+        ImageView iv_set_enterpassword_hide = (ImageView) view.findViewById(R.id.iv_set_enterpassword_hide);
+        iv_set_enterpassword_hide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //隐藏显示密码
+                if(count%2 == 0){
+                    //显示密码
+                    et_setpassword_password.setInputType(0);
+                }else {
+                    //隐藏密码
+                    et_setpassword_password.setInputType(129);//代码设置输入框输入内容
+                }
+                count++;
+            }
+        });
         //第二步：复制显示及初始化相关操作
         dialog = builder.create();
         dialog.setView(view,0,0,0,0);
