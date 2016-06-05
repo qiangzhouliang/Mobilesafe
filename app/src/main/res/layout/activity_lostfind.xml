@@ -80,7 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="重新进如设置向导"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:background="@drawable/shape_drawable"/>
 
     <View
         android:layout_width="match_parent"
