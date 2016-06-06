@@ -88,8 +88,7 @@ public class SetUp3Activity extends SetUpBaseActivity {
             String num = null;
             // 创建内容解析者
             ContentResolver contentResolver = getContentResolver();
-            Cursor cursor = contentResolver.query(uri,
-                    null, null, null, null);
+            Cursor cursor = contentResolver.query(uri, null, null, null, null);
             while (cursor.moveToNext()) {
                 num = cursor.getString(cursor.getColumnIndex("data1"));
             }

@@ -21,10 +21,11 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
     <CheckBox
-        android:id="@+id/cb_"
+        android:id="@+id/cb_setup4_protected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="你没有开启防盗保护"/>
+        android:text="你没有开启防盗保护"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
