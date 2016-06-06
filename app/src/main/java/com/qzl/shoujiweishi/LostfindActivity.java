@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 /**
  * 手机防盗
@@ -27,5 +28,15 @@ public class LostfindActivity extends AppCompatActivity {
             //手机防盗显示界面
             setContentView(R.layout.activity_lostfind);
         }
+    }
+
+    /**
+     * 重新进入设置向导的点击事件
+     * @param v
+     */
+    public void resetUp(View v){
+        Intent intent = new Intent(this,SetUp1Activity.class);
+        startActivity(intent);
+        finish();
     }
 }

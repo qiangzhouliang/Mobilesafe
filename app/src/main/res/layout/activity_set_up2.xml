@@ -40,7 +40,7 @@
         android:gravity="center_vertical"
         android:layout_marginLeft="5dp"/>
     <com.qzl.shoujiweishi.ui.SettingView
-        android:id="@+id/sv_setting_update"
+        android:id="@+id/sv_setup2_sim"
         android:layout_width="match_parent"
         qzl:text="点击绑定SIM卡"
         qzl:des_on="SIM卡已经绑定"

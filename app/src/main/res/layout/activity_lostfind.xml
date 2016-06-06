@@ -74,14 +74,16 @@
             android:layout_below="@+id/tv_lostfind_protected"
             android:background="#66000000" />
     </RelativeLayout>
-
+    <!-- TextView : 是天生没有点击事件的-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="重新进如设置向导"
         android:textSize="18sp"
-        android:background="@drawable/shape_drawable"/>
+        android:onClick="resetUp"
+        android:clickable="true"
+        android:background="@drawable/shape_drawable_button"/>
 
     <View
         android:layout_width="match_parent"

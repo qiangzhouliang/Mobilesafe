@@ -1,6 +1,7 @@
 package com.qzl.shoujiweishi;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.gesture.Gesture;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.widget.Toast;
 
 public abstract class SetUpBaseActivity extends AppCompatActivity {
     private GestureDetector gestureDetector;
+    protected SharedPreferences sp;
     //将每个界面中的上一步下一步按钮的操作，抽取到父类中
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         //1、获取收拾识别器
         //要想要手势识别器生效，必须将手势识别器注册到屏幕的触摸事件中
         gestureDetector= new GestureDetector(this,new MyOnGestureListener());
