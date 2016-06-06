@@ -5,6 +5,11 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 /**
  * 手机防盗
@@ -12,6 +17,11 @@ import android.view.View;
 public class LostfindActivity extends AppCompatActivity {
 
     private SharedPreferences sp;
+    @ViewInject(R.id.tv_lostfind_safenum)
+    private TextView tv_lostfind_safenum;
+
+    @ViewInject(R.id.tv_lostfind_protected)
+    private ImageView tv_lostfind_protected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +37,20 @@ public class LostfindActivity extends AppCompatActivity {
         }else {
             //手机防盗显示界面
             setContentView(R.layout.activity_lostfind);
+            ViewUtils.inject(this);
+            //根据保存的安全号码和防盗保护状态进行设置
+            tv_lostfind_safenum.setText(sp.getString("safenum",""));
+            //设置防盗保护是否开启的状态
+            //获取保存的防盗保护状态
+            boolean b = sp.getBoolean("protected",false);
+            //根据获取的防盗保护状态设置相应的显示图片
+            if(b){
+               //开启防盗保护
+                tv_lostfind_protected.setImageResource(R.drawable.lock);
+            }else {
+                //关闭防盗保护
+                tv_lostfind_protected.setImageResource(R.drawable.unlock);
+            }
         }
     }
 
