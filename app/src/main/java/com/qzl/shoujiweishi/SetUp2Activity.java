@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import com.qzl.shoujiweishi.ui.SettingView;
 
@@ -56,11 +57,17 @@ public class SetUp2Activity extends SetUpBaseActivity {
 
     @Override
     public void next_activity() {
-        //跳转到第三个界面
-        Intent intent = new Intent(this, SetUp3Activity.class);
-        startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.setup_enter_next, R.anim.setup_exit_next);
+        //判断用户是否绑定了SIM卡，绑定跳到第三个界面，没有绑定，提醒用户必须绑定
+        if(sv_setup2_sim.isChecked()){
+            //跳转到第三个界面
+            Intent intent = new Intent(this, SetUp3Activity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.setup_enter_next, R.anim.setup_exit_next);
+        }else {
+            Toast.makeText(getApplicationContext(), "请绑定SIM卡", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
