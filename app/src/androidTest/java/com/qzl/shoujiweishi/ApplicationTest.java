@@ -16,6 +16,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
         super(Application.class);
     }
+    //测试获取联系人
     public void testContacts(){
         List<HashMap<String,String>> list = ContactEngine.getAllContactInfo(getContext());
         for (HashMap<String, String> hashMap: list){

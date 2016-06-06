@@ -17,9 +17,7 @@ public class ContactEngine {
      *
      * @return
      */
-    public static List<HashMap<String, String>> getAllContactInfo(
-            Context context) {
-        SystemClock.sleep(3000);
+    public static List<HashMap<String, String>> getAllContactInfo(Context context) {
         ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
         // 1.获取内容解析者
         ContentResolver resolver = context.getContentResolver();

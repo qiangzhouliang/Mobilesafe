@@ -48,7 +48,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选怎联系人"
+        android:text="选择联系人"
+        android:onClick="selectContacts"
         android:background="@drawable/button_bg"/>
     <LinearLayout
         android:layout_width="match_parent"
