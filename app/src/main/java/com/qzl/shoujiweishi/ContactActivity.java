@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.qzl.shoujiweishi.engine.ContactEngine;
+import com.qzl.shoujiweishi.utils.MyAsycnTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,31 +29,34 @@ public class ContactActivity extends AppCompatActivity {
     //注解初始化控件，类似Spring，注解的形式生成Javabean，内部：通过反射的方式执行了findViewById
     @ViewInject(R.id.loading)
     private ProgressBar loading;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            lv_contact_contacts.setAdapter(new Myadapter());
-            loading.setVisibility(View.INVISIBLE);//数据显示完成，隐藏进度条
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
         ViewUtils.inject(this);//这一行可以把所有的使用注解的控件初始化出来
-        //加载数据之前显示进度条
-        loading.setVisibility(View.VISIBLE);
-        new Thread(new Runnable() {
+        //异步加载框架
+        new MyAsycnTask(){
+
             @Override
-            public void run() {
-                //获取联系人
-                list = ContactEngine.getAllContactInfo(getApplicationContext());
-                //获取完成联系人查询的时候给handler发送一个消息，在handler中去setAdapter
-                handler.sendEmptyMessage(0);
+            public void preTask() {
+                //加载数据之前显示进度条，在子线程之前执行
+                loading.setVisibility(View.VISIBLE);
             }
-        }).start();
+
+            @Override
+            public void doinBack() {
+                //获取联系人，在子线程之中操作
+                list = ContactEngine.getAllContactInfo(getApplicationContext());
+            }
+
+            @Override
+            public void postTask() {
+                //在子线程之后操作
+                lv_contact_contacts.setAdapter(new Myadapter());
+                loading.setVisibility(View.INVISIBLE);//数据显示完成，隐藏进度条
+            }
+        }.execute();
         //lv_contact_contacts = (ListView) findViewById(R.id.lv_contact_contacts);
 
         lv_contact_contacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
