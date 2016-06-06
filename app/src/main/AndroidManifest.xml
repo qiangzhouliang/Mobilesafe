@@ -38,6 +38,7 @@
         <activity android:name=".SetUp3Activity" />
         <activity android:name=".SetUp4Activity" />
         <activity android:name=".SetUpBaseActivity" />
+        <activity android:name=".ContactActivity" />
 
         <receiver
             android:name=".receiver.BootCompleteReceiver"
@@ -50,16 +51,14 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ContactActivity" />
-
-        <service
+        <receiver
             android:name=".receiver.SMSReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter android:priority="1000">
+            <intent-filter android:priority="2147483647">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
             </intent-filter>
-        </service>
+        </receiver>
     </application>
 
 </manifest>
