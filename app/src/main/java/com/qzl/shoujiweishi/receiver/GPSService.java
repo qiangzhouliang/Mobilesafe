@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
-import android.widget.Toast;
 
 import java.util.List;
 
