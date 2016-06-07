@@ -36,7 +36,6 @@ public class ContactActivity extends AppCompatActivity {
         ViewUtils.inject(this);//这一行可以把所有的使用注解的控件初始化出来
         //异步加载框架
         new MyAsycnTask() {
-
             @Override
             public void preTask() {
                 //加载数据之前显示进度条，在子线程之前执行

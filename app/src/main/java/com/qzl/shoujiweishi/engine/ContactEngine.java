@@ -18,7 +18,6 @@ public class ContactEngine {
      * @return
      */
     public static List<HashMap<String, String>> getAllContactInfo(Context context) {
-        SystemClock.sleep(3000);
         ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
         // 1.获取内容解析者
         ContentResolver resolver = context.getContentResolver();
@@ -30,8 +29,8 @@ public class ContactEngine {
         Uri date_uri = Uri.parse("content://com.android.contacts/data");
         // 4.查询操作,先查询raw_contacts,查询contact_id
         // projection : 查询的字段
-        Cursor cursor = resolver.query(raw_uri, new String[] { "contact_id" },
-                null, null, null);
+        // 空指针 1 null.fangfa 2 参数为空
+        Cursor cursor = resolver.query(raw_uri, new String[] { "contact_id" }, null, null, null);
         // 5.解析cursor
         while (cursor.moveToNext()) {
             // 6.获取查询的数据
@@ -39,14 +38,14 @@ public class ContactEngine {
             // cursor.getString(cursor.getColumnIndex("contact_id"));//getColumnIndex
             // : 查询字段在cursor中索引值,一般都是用在查询字段比较多的时候
             // 判断contact_id是否为空
-            if (!TextUtils.isEmpty(contact_id)) {//可判断 null 和""
+            //可判断 null 和""
+            if (!TextUtils.isEmpty(contact_id)) {
                 // 7.根据contact_id查询view_data表中的数据
                 // selection : 查询条件
                 // selectionArgs :查询条件的参数
                 // sortOrder : 排序
                 // 空指针: 1.null.方法 2.参数为null
-                Cursor c = resolver.query(date_uri, new String[] { "data1", "mimetype" }, "raw_contact_id=?",
-                        new String[] { contact_id }, null);
+                Cursor c = resolver.query(date_uri, new String[] { "data1", "mimetype" }, "raw_contact_id=?", new String[] { contact_id }, null);
                 HashMap<String, String> map = new HashMap<String, String>();
                 // 8.解析c
                 while (c.moveToNext()) {

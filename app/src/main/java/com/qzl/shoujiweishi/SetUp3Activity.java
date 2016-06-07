@@ -57,32 +57,31 @@ public class SetUp3Activity extends SetUpBaseActivity {
 
     /**
      * 选怎联系人按钮的操作
-     *
      * @param view
      */
     public void selectContacts(View view) {
-        //跳转到选怎联系人界面
+        /*//跳转到选怎联系人界面
         Intent intent = new Intent(this,ContactActivity.class);
         //当现在的activity退出时，会调运之前activity的onActivityResult方法
-        startActivityForResult(intent,0);
-        /*//打开系统联系人
+        startActivityForResult(intent,0);*/
+        //打开系统联系人
         Intent intent = new Intent();
         intent.setAction("android.intent.action.PICK");
         intent.addCategory("android.intent.category.DEFAULT");
         intent.setType("vnd.android.cursor.dir/phone_v2");
-        startActivityForResult(intent, 1);*/
+        startActivityForResult(intent, 1);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data != null) {
+        /*if(data != null) {
             //接收选择联系人界面传递过来的数据
             String num = data.getStringExtra("num");
             //将获取到的号码，设置给安全输入框
             et_setup3_safenum.setText(num);
-        }
-        /*if (data != null) {
+        }*/
+        if (data != null) {
             //	String num = data.getStringExtra("num");
             Uri uri = data.getData();
             String num = null;
@@ -95,6 +94,6 @@ public class SetUp3Activity extends SetUpBaseActivity {
             cursor.close();
             num = num.replaceAll("-", "");//替换的操作,555-6 -> 5556
             et_setup3_safenum.setText(num);
-        }*/
+        }
     }
 }
