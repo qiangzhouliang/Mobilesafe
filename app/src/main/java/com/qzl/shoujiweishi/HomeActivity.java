@@ -51,9 +51,13 @@ public class HomeActivity extends AppCompatActivity {
                             showEnterPassWordDoalog();
                         }
                         break;
+                    case 7:
+                        Intent intent7 = new Intent(HomeActivity.this,AToolsActivity.class);
+                        startActivity(intent7);
+                        break;
                     case 8://设置中心
-                        Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
-                        startActivity(intent);
+                        Intent intent8 = new Intent(HomeActivity.this, SettingActivity.class);
+                        startActivity(intent8);
                         break;
                 }
             }

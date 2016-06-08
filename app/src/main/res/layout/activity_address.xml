@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.qzl.shoujiweishi.HomeActivity"
+    android:orientation="vertical">
+    <!--layout_gravity : 设置控件在父控件中的位置
+        gravity ： 设置控件内的内容位置
+        layout_marginTop : 距离某控件的距离
+        paddingTop ：距离控件内边框的距离,距离textView控件内顶边框的距离
+    -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="查询号码归属地"
+        android:id="@+id/textView"
+        android:background="#8866ff00"
+        android:gravity="center_horizontal"
+        android:textSize="22sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_address_queryphone"
+        android:ems="10"
+        android:hint="请输入要查询的号码"
+        android:inputType="phone"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询"
+        android:id="@+id/button1"
+        android:onClick="query"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_address_queryaddress"
+        android:textSize="30sp"
+        android:textColor="#00ff00" />
+
+
+</LinearLayout>

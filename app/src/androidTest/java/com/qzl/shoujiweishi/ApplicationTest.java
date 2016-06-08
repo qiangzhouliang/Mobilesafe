@@ -27,7 +27,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
     //测试数据库操作
     public void testAddtess(){
-        String queryAddress = AddressDao.queryAssress("18888888888", getContext());
+        String queryAddress = AddressDao.queryAddress("18888888888", getContext());
         if(!TextUtils.isEmpty(queryAddress)){
             System.out.println("号码归属地："+queryAddress);
         }
