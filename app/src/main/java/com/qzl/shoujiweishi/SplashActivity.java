@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -22,12 +23,14 @@ import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.util.IOUtils;
 import com.qzl.shoujiweishi.utils.StreamUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -43,14 +46,14 @@ public class SplashActivity extends Activity {
     private static final int MSG_IO_ERROR = 5;
     private static final int MSG_JSON_ERROR = 6;
 
-    private TextView tv_splash_versionname,tv_splash_plan;
+    private TextView tv_splash_versionname, tv_splash_plan;
     private SharedPreferences sp;
-    private String code,apkurl,des;
+    private String code, apkurl, des;
     private int statrTime;
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_UPDATE_DIALOG:
                     //弹出对话框
                     showdialog();
@@ -69,11 +72,11 @@ public class SplashActivity extends Activity {
                     break;
                 case MSG_URL_ERROR:
                     //方便后期定位异常
-                    Toast.makeText(getApplicationContext(), "错误号："+MSG_URL_ERROR, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "错误号：" + MSG_URL_ERROR, Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
                 case MSG_JSON_ERROR:
-                    Toast.makeText(getApplicationContext(), "错误号："+MSG_JSON_ERROR, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "错误号：" + MSG_JSON_ERROR, Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
             }
@@ -121,7 +124,7 @@ public class SplashActivity extends Activity {
     private void download() {
         HttpUtils httpUtils = new HttpUtils();
         //判断sd卡是否挂载
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             //url:新版本下载路径
             //target：保存新版本目录
             //callback：RequestCallBack
@@ -173,7 +176,7 @@ public class SplashActivity extends Activity {
         //单独设置会相互覆盖
         /*intent.setData(Uri.fromFile(new File("/mnt/sdcard/mobliesafe_2.apk")));
         intent.setType("application/vnd.android.package-archive");*///这两种方法不能共存
-        intent.setDataAndType(Uri.fromFile(new File("/mnt/sdcard/mobliesafe_2.apk")),"application/vnd.android.package-archive");
+        intent.setDataAndType(Uri.fromFile(new File("/mnt/sdcard/mobliesafe_2.apk")), "application/vnd.android.package-archive");
         //在当前activity退出时，会调运之前activity的onActivityResult方法
         //requestCode : 请求码，用来标示是从哪个activity跳转过来的
         // ABC a->c b->c ,c区分intent是从哪个activity传递过来的,这时候就要用到请求码了
@@ -190,7 +193,7 @@ public class SplashActivity extends Activity {
      * 跳转到主界面
      */
     private void enterHome() {
-        Intent intent = new Intent(this,HomeActivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         //移除splash界面
         finish();
@@ -200,16 +203,16 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        sp = getSharedPreferences("config",MODE_PRIVATE);
+        sp = getSharedPreferences("config", MODE_PRIVATE);
         tv_splash_versionname = (TextView) findViewById(R.id.tv_splash_versionname);
         tv_splash_plan = (TextView) findViewById(R.id.tv_splash_plan);
         tv_splash_versionname.setText("版本号:" + getVersionName());
-        if(sp.getBoolean("update",true)){
+        if (sp.getBoolean("update", true)) {
             update();
-        }else {
+        } else {
             //不能让主线程去睡两秒钟
             //原因：主线程有一个渲染界面的操作，主线程睡两秒钟，就没有办法渲染界面了
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
@@ -217,6 +220,45 @@ public class SplashActivity extends Activity {
                     enterHome();
                 }
             }.start();
+        }
+        //拷贝数据库
+        copyDb();
+    }
+
+    /**
+     * 拷贝数据库
+     */
+    private void copyDb() {
+        File file = new File(getFilesDir(), "address.db");
+        if (!file.exists()) {
+            //从assets目录中将数据库读取出来
+            //1 获取assets的管理者
+            AssetManager am = getAssets();
+            InputStream in = null;
+            FileOutputStream out = null;
+            try {
+                // 2 读取数据库
+                in = am.open("address.db");
+                //写入流
+                //getCacheDir() : 获取缓存的路径
+                // getFilesDir() : 获取文件的路径
+                out = new FileOutputStream(file);
+                //3 读写操作
+                //设置缓冲区
+                byte[] b = new byte[1024];
+                int len = -1;
+                while ((len = in.read(b)) != -1) {
+                    out.write(b, 0, len);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+//            in.close();
+//            out.close();
+                // 关闭流
+                IOUtils.closeQuietly(in);
+                IOUtils.closeQuietly(out);
+            }
         }
     }
 
@@ -244,7 +286,7 @@ public class SplashActivity extends Activity {
                     conn.setRequestMethod("GET");//post
                     //1.1.5 获取服务器返回的状态码,200,404,500
                     int responseCode = conn.getResponseCode();
-                    if(responseCode == 200){
+                    if (responseCode == 200) {
                         //连接成功,获取服务器返回的数据，code：新版本的版本号 apkurl：新版本下载路径 des：描述信息，告诉用户增加了那些功能，修改了那些bug
                         //获取数据之前，服务器是如何封装数据的 xml json
                         System.out.println("连接成功了。。。。。");
@@ -258,19 +300,19 @@ public class SplashActivity extends Activity {
                         code = jsonObject.getString("code");
                         apkurl = jsonObject.getString("apkurl");
                         des = jsonObject.getString("des");
-                        System.out.println("code = "+code+"apkurl = "+apkurl+"des = "+des);
+                        System.out.println("code = " + code + "apkurl = " + apkurl + "des = " + des);
                         //1.2 查看是否有最新版本
                         //判断服务器返回的版本号和当前应用程序的版本号是否一致,一致，就表示没有最新版本，不一致，就表示有最新版本
-                        if(code.equals(getVersionName())){
+                        if (code.equals(getVersionName())) {
                             //没有最新版本
                             message.what = MSG_ENTER_HOME;
-                        }else {
+                        } else {
                             //有最新版本
                             //2 弹出对话框，提醒用户更新版本
                             message.what = MSG_UPDATE_DIALOG;
 
                         }
-                    }else {
+                    } else {
                         //连接失败
                         System.out.println("连接失败。。。。。");
                         message.what = MSG_SERVER_ERROR;
@@ -284,14 +326,14 @@ public class SplashActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     message.what = MSG_JSON_ERROR;
-                }finally {
+                } finally {
                     //不管有没有异常，都会执行
                     //处理连接外网连接时间的处理
                     //在连接成功之后再去获取一个时间
                     int endTime = (int) System.currentTimeMillis();
                     //比较两个时间的时间差，如果小于两秒，睡两秒，大于两秒，不睡
                     int dTime = endTime - statrTime;
-                    if(dTime < 2000){
+                    if (dTime < 2000) {
                         //睡两秒钟
                         SystemClock.sleep(2000 - dTime);//始终都是睡两秒钟
                     }
@@ -305,7 +347,7 @@ public class SplashActivity extends Activity {
     /**
      * 获取当前应用程序的版本号
      */
-    private String getVersionName(){
+    private String getVersionName() {
         //包的管理者，获取清单文件中的所有信息
         PackageManager pm = getPackageManager();
         String versionName = "";
@@ -315,7 +357,7 @@ public class SplashActivity extends Activity {
             // flags：指定信息的标签，0：获取基础的信息，比如包名，版本号，要想获取权限等信息，必须通过标签来指定才能获取
             //GET_PERMISSION:标签的含义：除了获取基本信息之外，还会额外获取权限信息
             //getPackageName:获取当前应用程序的包名
-            PackageInfo packageInfo = pm.getPackageInfo(getPackageName(),0);
+            PackageInfo packageInfo = pm.getPackageInfo(getPackageName(), 0);
             //获取版本号名称
             versionName = packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
