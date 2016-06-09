@@ -1,5 +1,6 @@
 package com.qzl.shoujiweishi;
 
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,7 +9,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +76,9 @@ public class AddressActivity extends AppCompatActivity {
                 }
             });*/
             et_address_queryphone.startAnimation(shake);//开启动画
+            //震动
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            vibrator.vibrate(100);//0.1秒
         }else {
             //3 根据号码查询号码归属地
             String queryAddress = AddressDao.queryAddress(phone, getApplicationContext());
