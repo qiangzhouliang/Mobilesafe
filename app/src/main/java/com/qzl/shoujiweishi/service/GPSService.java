@@ -1,4 +1,4 @@
-package com.qzl.shoujiweishi.receiver;
+package com.qzl.shoujiweishi.service;
 
 import android.Manifest;
 import android.app.Service;

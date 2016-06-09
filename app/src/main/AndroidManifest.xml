@@ -22,8 +22,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 大概位置权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- 震动的权限-->
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- 震动的权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -48,7 +48,7 @@
         <activity android:name=".SetUpBaseActivity" />
         <activity android:name=".ContactActivity" />
         <activity android:name=".AToolsActivity" />
-        <activity android:name=".AddressActivity"/>
+        <activity android:name=".AddressActivity" />
 
         <receiver
             android:name=".receiver.BootCompleteReceiver"
@@ -84,11 +84,13 @@
         </receiver>
 
         <service
-            android:name=".receiver.GPSService"
+            android:name=".service.GPSService"
             android:enabled="true"
             android:exported="true" />
-
-
+        <service
+            android:name=".service.AddressServices"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -87,6 +87,5 @@ public class AddressActivity extends AppCompatActivity {
                 tv_address_queryaddress.setText(queryAddress);
             }
         }
-
     }
 }

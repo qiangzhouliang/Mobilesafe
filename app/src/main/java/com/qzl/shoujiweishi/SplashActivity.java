@@ -24,6 +24,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.util.IOUtils;
+import com.qzl.shoujiweishi.service.AddressServices;
 import com.qzl.shoujiweishi.utils.StreamUtil;
 
 import org.json.JSONException;
@@ -223,6 +224,9 @@ public class SplashActivity extends Activity {
         }
         //拷贝数据库
         copyDb();
+        //开启监听电话状态的服务
+        Intent intent = new Intent(this, AddressServices.class);
+        startService(intent);
     }
 
     /**
