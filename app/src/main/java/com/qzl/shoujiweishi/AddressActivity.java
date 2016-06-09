@@ -2,8 +2,13 @@ package com.qzl.shoujiweishi;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +28,32 @@ public class AddressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
         ViewUtils.inject(this);
+        //监听输入框文本变化的操作
+        et_address_queryphone.addTextChangedListener(new TextWatcher() {
+            //当文本变化之前调运的方法
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            //文本变化完成
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //1 获取出输入框输入的内容
+                String phone = s.toString();
+                //2 根据号码查询号码归属地
+                String qureyAddress = AddressDao.queryAddress(phone, getApplicationContext());
+                //3 判断查询的号码归属地是否为空
+                if(!TextUtils.isEmpty(qureyAddress)){
+                    //将查询的号码归属地设置给textView显示
+                    tv_address_queryaddress.setText(qureyAddress);
+                }
+            }
+            //文本变化之后调运
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
@@ -35,13 +66,24 @@ public class AddressActivity extends AppCompatActivity {
         //2 判断号码是否为空
         if(TextUtils.isEmpty(phone)){
             Toast.makeText(getApplicationContext(), "请输入要查询的号码", Toast.LENGTH_SHORT).show();
-            return;
+            //实现抖动的效果
+            Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+            /*shake.setInterpolator(new Interpolator() {
+                //动画插补器
+                @Override
+                public float getInterpolation(float x) {
+                    return 0;//根据x的值获取y的值 y = x*x 等
+                }
+            });*/
+            et_address_queryphone.startAnimation(shake);//开启动画
+        }else {
+            //3 根据号码查询号码归属地
+            String queryAddress = AddressDao.queryAddress(phone, getApplicationContext());
+            //4 判断查询的号码归属地是否为空
+            if(!TextUtils.isEmpty(queryAddress)){
+                tv_address_queryaddress.setText(queryAddress);
+            }
         }
-        //3 根据号码查询号码归属地
-        String queryAddress = AddressDao.queryAddress(phone, getApplicationContext());
-        //4 判断查询的号码归属地是否为空
-        if(!TextUtils.isEmpty(queryAddress)){
-            tv_address_queryaddress.setText(queryAddress);
-        }
+
     }
 }
