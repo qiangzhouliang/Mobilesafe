@@ -28,4 +28,12 @@
         qzl:des_on="提示更新已打开"
         qzl:des_off="提示更新已关闭"
 	    android:layout_height="wrap_content" />
+
+    <com.qzl.shoujiweishi.ui.SettingView
+        android:id="@+id/sv_setting_address"
+        android:layout_width="match_parent"
+        qzl:text="显示号码归属地"
+        qzl:des_on="打开显示号码归属地"
+        qzl:des_off="关闭显示号码归属地"
+        android:layout_height="wrap_content" />
 </LinearLayout>

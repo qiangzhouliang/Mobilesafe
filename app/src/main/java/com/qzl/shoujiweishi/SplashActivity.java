@@ -225,8 +225,8 @@ public class SplashActivity extends Activity {
         //拷贝数据库
         copyDb();
         //开启监听电话状态的服务
-        Intent intent = new Intent(this, AddressServices.class);
-        startService(intent);
+        /*Intent intent = new Intent(this, AddressServices.class);
+        startService(intent);*/
     }
 
     /**
