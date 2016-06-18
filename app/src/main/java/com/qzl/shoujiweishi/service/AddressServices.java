@@ -1,7 +1,10 @@
 package com.qzl.shoujiweishi.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
@@ -18,6 +21,7 @@ public class AddressServices extends Service {
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
     private WindowManager windowManager;
+    private MyOutGoingCallReceiver myOutGoingCallReceiver;
     private TextView textView;
     public AddressServices() {
     }
@@ -30,6 +34,16 @@ public class AddressServices extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        //代码注册监听外拨电话的广播接收者
+        //需要的元素：1 广播接收者，2.设置监听的广播事件
+        //1. 设置广播接收者
+        myOutGoingCallReceiver = new MyOutGoingCallReceiver();
+        // 2. 设置接收的广播事件
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.NEW_OUTGOING_CALL");//设置接收的广播事件
+        //3。 注册广播接收者
+        registerReceiver(myOutGoingCallReceiver,intentFilter);
+
         //监听电话状态
         //1 获取电话管理者
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -40,6 +54,24 @@ public class AddressServices extends Service {
         telephonyManager.listen(myPhoneStateListener,PhoneStateListener.LISTEN_CALL_STATE);
     }
 
+    /**
+     * 外拨电话的而广播接收者
+     */
+    private class MyOutGoingCallReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //查询外拨点话的号码归属地
+            //1 获取外拨电话
+            String phone = getResultData();
+            //2 查询号码归属地
+            String queryAddress = AddressDao.queryAddress(phone, getApplicationContext());
+            //3 判断号码归属地是否为空
+            if(!TextUtils.isEmpty(queryAddress)){
+                //显示toast
+                showToast(queryAddress);
+            }
+        }
+    }
     private class MyPhoneStateListener extends PhoneStateListener{
         //监听电话状态的回调方法
         // stats: 电话的的状态 incomingNumber：来电电话
@@ -57,7 +89,7 @@ public class AddressServices extends Service {
                     if(!TextUtils.isEmpty(queryAddress)){
                         //显示号码归属地
                         //Toast.makeText(getApplicationContext(), queryAddress, Toast.LENGTH_SHORT).show();
-                        showToas(queryAddress);
+                        showToast(queryAddress);
                     }
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK://通话状态
@@ -67,41 +99,42 @@ public class AddressServices extends Service {
             super.onCallStateChanged(state, incomingNumber);
         }
 
-        /**
-         * 显示toast
-         */
-        private void showToas(String queryAddress) {
-            //1 获取windowManger
-            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            textView = new TextView(getApplicationContext());
-            textView.setText(queryAddress);
-            textView.setTextSize(30);
-            textView.setTextColor(Color.RED);
-            //3.设置toast的属性
-            //layoutparams是toast的属性,控件要添加到那个父控件中,父控件就要使用那个父控件的属性,表示控件的属性规则符合父控件的属性规则
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT;//高度包裹内容
-            params.width = WindowManager.LayoutParams.WRAP_CONTENT; //宽度包裹内容
-            params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE  //没有焦点
-                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE  // 不可触摸
-                    | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON; // 保持当前屏幕
-            params.format = PixelFormat.TRANSLUCENT; // 透明
-            params.type = WindowManager.LayoutParams.TYPE_TOAST; // 执行toast的类型
-            //2 将view对象添加到windowManager中
-            //params : layoutparams  控件的属性
-            //将params属性设置给view对象，并添加到WindowManager中
-            windowManager.addView(textView,params);//将一个view对象添加到桌面
-        }
+    }
 
-        /**
-         * 隐藏toast
-         */
-        public void hideToast(){
-            if(windowManager != null && textView != null){
-                windowManager.removeView(textView);
-                windowManager = null;
-                textView = null;
-            }
+    /**
+     * 显示toast
+     */
+    private void showToast(String queryAddress) {
+        //1 获取windowManger
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        textView = new TextView(getApplicationContext());
+        textView.setText(queryAddress);
+        textView.setTextSize(30);
+        textView.setTextColor(Color.RED);
+        //3.设置toast的属性
+        //layoutparams是toast的属性,控件要添加到那个父控件中,父控件就要使用那个父控件的属性,表示控件的属性规则符合父控件的属性规则
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;//高度包裹内容
+        params.width = WindowManager.LayoutParams.WRAP_CONTENT; //宽度包裹内容
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE  //没有焦点
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE  // 不可触摸
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON; // 保持当前屏幕
+        params.format = PixelFormat.TRANSLUCENT; // 透明
+        params.type = WindowManager.LayoutParams.TYPE_TOAST; // 执行toast的类型
+        //2 将view对象添加到windowManager中
+        //params : layoutparams  控件的属性
+        //将params属性设置给view对象，并添加到WindowManager中
+        windowManager.addView(textView,params);//将一个view对象添加到桌面
+    }
+
+    /**
+     * 隐藏toast
+     */
+    public void hideToast(){
+        if(windowManager != null && textView != null){
+            windowManager.removeView(textView);
+            windowManager = null;
+            textView = null;
         }
     }
 
@@ -109,6 +142,8 @@ public class AddressServices extends Service {
     public void onDestroy() {
         //当服务关闭时，取消监听操作
         telephonyManager.listen(myPhoneStateListener,PhoneStateListener.LISTEN_NONE);
+        //注销外拨电话广播接收者
+        unregisterReceiver(myOutGoingCallReceiver);
         super.onDestroy();
     }
 }
