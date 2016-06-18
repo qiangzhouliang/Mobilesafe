@@ -5,16 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qzl.shoujiweishi.R;
 import com.qzl.shoujiweishi.db.AddressDao;
 
 public class AddressServices extends Service {
@@ -23,6 +26,8 @@ public class AddressServices extends Service {
     private WindowManager windowManager;
     private MyOutGoingCallReceiver myOutGoingCallReceiver;
     private TextView textView;
+    private SharedPreferences sp;
+    private View view;
     public AddressServices() {
     }
 
@@ -34,6 +39,7 @@ public class AddressServices extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         //代码注册监听外拨电话的广播接收者
         //需要的元素：1 广播接收者，2.设置监听的广播事件
         //1. 设置广播接收者
@@ -105,12 +111,22 @@ public class AddressServices extends Service {
      * 显示toast
      */
     private void showToast(String queryAddress) {
+        int[] bgcolor = new int[] {
+                R.color.white,
+                R.color.orange, R.color.blue,
+                R.color.gray, R.color.green };
         //1 获取windowManger
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        textView = new TextView(getApplicationContext());
+        view = View.inflate(getApplicationContext(), R.layout.toast_custom,null);
+        //初始化控件
+        TextView tv_toastcustom_address = (TextView) view.findViewById(R.id.tv_toastcustom_address);
+        tv_toastcustom_address.setText(queryAddress);
+        //根据归属地提示框风格中设置的风格索引值设置toast显示的背景风格
+        view.setBackgroundResource(bgcolor[sp.getInt("which",0)]);
+        /*textView = new TextView(getApplicationContext());
         textView.setText(queryAddress);
         textView.setTextSize(30);
-        textView.setTextColor(Color.RED);
+        textView.setTextColor(Color.RED);*/
         //3.设置toast的属性
         //layoutparams是toast的属性,控件要添加到那个父控件中,父控件就要使用那个父控件的属性,表示控件的属性规则符合父控件的属性规则
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
@@ -124,7 +140,7 @@ public class AddressServices extends Service {
         //2 将view对象添加到windowManager中
         //params : layoutparams  控件的属性
         //将params属性设置给view对象，并添加到WindowManager中
-        windowManager.addView(textView,params);//将一个view对象添加到桌面
+        windowManager.addView(view,params);//将一个view对象添加到桌面
     }
 
     /**

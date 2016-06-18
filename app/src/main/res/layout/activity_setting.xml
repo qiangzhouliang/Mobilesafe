@@ -36,4 +36,9 @@
         qzl:des_on="打开显示号码归属地"
         qzl:des_off="关闭显示号码归属地"
         android:layout_height="wrap_content" />
+    <com.qzl.shoujiweishi.ui.SettingClickView
+        android:id="@+id/scv_setting_changedbg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>
