@@ -21,6 +21,7 @@ public class SettingActivity extends Activity {
     private SharedPreferences sp;//保存各种状态
     private SettingView sv_setting_address;//号码归属地
     private SettingClickView scv_setting_changedbg;
+    private SettingClickView scv_setting_location_toast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +32,28 @@ public class SettingActivity extends Activity {
         sv_setting_update = (SettingView) findViewById(R.id.sv_setting_update);
         sv_setting_address = (SettingView) findViewById(R.id.sv_setting_address);
         scv_setting_changedbg = (SettingClickView) findViewById(R.id.scv_setting_changedbg);
+        scv_setting_location_toast = (SettingClickView) findViewById(R.id.scv_setting_location_toast);
 
         update();
         changedbg();
+        locationToast();
 
+    }
+
+    /**
+     * 归属地提示框位置
+     */
+    private void locationToast() {
+        scv_setting_location_toast.setTitle("归属地提示框位置");
+        scv_setting_location_toast.setDes("设置归属地提示框的显示位置");
+        scv_setting_location_toast.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到设置位置的界面
+                Intent intent = new Intent(getApplicationContext(),DragViewActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

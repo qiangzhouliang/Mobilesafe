@@ -3,6 +3,7 @@ package com.qzl.shoujiweishi.utils;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Handler;
 
 import java.util.List;
 

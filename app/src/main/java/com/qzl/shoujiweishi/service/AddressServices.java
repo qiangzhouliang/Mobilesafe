@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -117,6 +118,7 @@ public class AddressServices extends Service {
                 R.color.gray, R.color.green };
         //1 获取windowManger
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        //通过这个将布局文件转换成View对象
         view = View.inflate(getApplicationContext(), R.layout.toast_custom,null);
         //初始化控件
         TextView tv_toastcustom_address = (TextView) view.findViewById(R.id.tv_toastcustom_address);
@@ -137,6 +139,12 @@ public class AddressServices extends Service {
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON; // 保持当前屏幕
         params.format = PixelFormat.TRANSLUCENT; // 透明
         params.type = WindowManager.LayoutParams.TYPE_TOAST; // 执行toast的类型
+        //设置toast位置
+        params.gravity = Gravity.LEFT | Gravity.TOP;
+        params.x = 100;//不是坐标，表示边框的距离，根据gravity来设置的，如果gravity是left的话表示距离左边框的距离，如果是right的话，表示距离有边框的距离
+        params.y = 100;//跟x的含义一样
+        //效果冲突的话，以默认的效果为主
+        //params.gravity = Gravity.LEFT | Gravity.RIGHT;
         //2 将view对象添加到windowManager中
         //params : layoutparams  控件的属性
         //将params属性设置给view对象，并添加到WindowManager中
