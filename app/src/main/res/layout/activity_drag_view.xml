@@ -10,7 +10,7 @@
         android:id="@+id/ll_dragview_toast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/blue"
+        android:background="@color/orange"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -28,6 +28,7 @@
             android:textSize="18sp" />
     </LinearLayout>
     <TextView
+        android:id="@+id/tv_dragview_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="按住提示框拖到任意位置\n按手机返回键立即生效"
@@ -36,6 +37,17 @@
         android:textSize="18sp"
         android:gravity="center_horizontal"
         android:background="@color/royalblue"
+        android:padding="10dp"/>
+    <TextView
+        android:id="@+id/tv_dragview_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="按住提示框拖到任意位置\n按手机返回键立即生效"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:background="@color/royalblue"
+        android:visibility="invisible"
         android:padding="10dp"/>
 
 </RelativeLayout>
