@@ -1,6 +1,7 @@
 package com.qzl.shoujiweishi;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -10,9 +11,11 @@ import android.widget.LinearLayout;
 public class DragViewActivity extends Activity {
 
     private LinearLayout ll_dragview_toast;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         setContentView(R.layout.activity_drag_view);
         ll_dragview_toast = (LinearLayout) findViewById(R.id.ll_dragview_toast);
         setTouch();
@@ -64,6 +67,14 @@ public class DragViewActivity extends Activity {
                     case MotionEvent.ACTION_UP:
                         //抬起的事件
                         System.out.println("抬起了。。。。");
+                        //保存控件的坐标，保存的是控件的坐标，不是手指的坐标
+                        //获取控件坐标
+                        int x = ll_dragview_toast.getLeft();
+                        int y = ll_dragview_toast.getTop();
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt("x",x);
+                        editor.putInt("y",y);
+                        editor.commit();
                     default:
                         break;
                 }

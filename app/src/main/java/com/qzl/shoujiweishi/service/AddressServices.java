@@ -141,8 +141,8 @@ public class AddressServices extends Service {
         params.type = WindowManager.LayoutParams.TYPE_TOAST; // 执行toast的类型
         //设置toast位置
         params.gravity = Gravity.LEFT | Gravity.TOP;
-        params.x = 100;//不是坐标，表示边框的距离，根据gravity来设置的，如果gravity是left的话表示距离左边框的距离，如果是right的话，表示距离有边框的距离
-        params.y = 100;//跟x的含义一样
+        params.x = sp.getInt("x",100);//不是坐标，表示边框的距离，根据gravity来设置的，如果gravity是left的话表示距离左边框的距离，如果是right的话，表示距离有边框的距离
+        params.y = sp.getInt("y",100);//跟x的含义一样
         //效果冲突的话，以默认的效果为主
         //params.gravity = Gravity.LEFT | Gravity.RIGHT;
         //2 将view对象添加到windowManager中
