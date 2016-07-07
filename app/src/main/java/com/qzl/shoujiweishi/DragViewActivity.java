@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -13,6 +15,9 @@ public class DragViewActivity extends Activity {
 
     private LinearLayout ll_dragview_toast;
     private SharedPreferences sp;
+    private int width;
+    private int height;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +43,13 @@ public class DragViewActivity extends Activity {
         layoutParams.leftMargin = x;
         layoutParams.topMargin = y;
         ll_dragview_toast.setLayoutParams(layoutParams);
+        //获取屏幕宽度
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        //windowManager.getDefaultDisplay().getWidth();
+        DisplayMetrics outMetrics = new DisplayMetrics();//创建一张白纸
+        windowManager.getDefaultDisplay().getMetrics(outMetrics);//给白纸设置宽高
+        width = outMetrics.widthPixels;
+        height = outMetrics.heightPixels;
         setTouch();
     }
 
@@ -79,6 +91,11 @@ public class DragViewActivity extends Activity {
                         t += dy;
                         int r = l + ll_dragview_toast.getWidth();
                         int b = t + ll_dragview_toast.getHeight();
+
+                        //再绘制控件之前，判断ltrb的值是否超出屏幕的大小，如果是，就不再进行绘制控件的操作了
+                        if(l < 0 || r > width || t < 0 || b > height - 25){
+                            break;
+                        }
                         ll_dragview_toast.layout(l,t,r,b);//重新绘制控件
                         //5 更新开始的坐标
                         startX = newX;
