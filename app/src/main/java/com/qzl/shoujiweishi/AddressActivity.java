@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.qzl.shoujiweishi.db.AddressDao;
+import com.qzl.shoujiweishi.db.dao.AddressDao;
 
 public class AddressActivity extends AppCompatActivity {
     @ViewInject(R.id.et_address_queryphone)

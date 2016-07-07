@@ -3,9 +3,10 @@ package com.qzl.shoujiweishi;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.qzl.shoujiweishi.db.AddressDao;
+import com.qzl.shoujiweishi.db.BlackNumOpenHlper;
+import com.qzl.shoujiweishi.db.dao.AddressDao;
+import com.qzl.shoujiweishi.db.dao.BlackNumDao;
 import com.qzl.shoujiweishi.engine.ContactEngine;
 
 import java.util.HashMap;
@@ -15,6 +16,9 @@ import java.util.List;
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {
+
+    private BlackNumDao blackNumDao;
+
     public ApplicationTest() {
         super(Application.class);
     }
@@ -31,5 +35,52 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         if(!TextUtils.isEmpty(queryAddress)){
             System.out.println("号码归属地："+queryAddress);
         }
+    }
+
+    /**
+     * 在测试方法之前执行的方法
+     * @throws Exception
+     */
+    @Override
+    protected void setUp() throws Exception {
+        blackNumDao = new BlackNumDao(getContext());
+        super.setUp();
+    }
+
+    /**
+     * 在测试方法之后执行的方法
+     * @throws Exception
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    //测试创建数据库
+    public void testBlackNumOpenHelper(){
+        BlackNumOpenHlper blackNumOpenHlper = new BlackNumOpenHlper(getContext());//不能创建数据库
+        blackNumOpenHlper.getReadableDatabase();//创建数据库
+    }
+    //测试BlackNumOpenHlper添加操作
+    public void testAddBlackNum(){
+        //BlackNumDao blackNumDao = new BlackNumDao(getContext());
+        blackNumDao.addBlackNum("110",BlackNumDao.SMS);
+    }
+    //测试BlackNumOpenHlper更新黑名单操作
+    public void testUpdateBlackNum(){
+        //BlackNumDao blackNumDao = new BlackNumDao(getContext());
+        blackNumDao.updateBlackNum("110",BlackNumDao.CALL);
+    }
+    //测试BlackNumOpenHlper查询黑名单拦截模式的操作
+    public void testQueryBlackNumMode(){
+        //BlackNumDao blackNumDao = new BlackNumDao(getContext());
+        int mode = blackNumDao.queryBlackNumMode("110");
+       //断言 参数1 期望的值，参数2：实际的值，获取的值
+        assertEquals(0,mode);
+    }
+    //测试BlackNumOpenHlper删除数据
+    public void testDeleteBlackNumMode(){
+        //BlackNumDao blackNumDao = new BlackNumDao(getContext());
+        blackNumDao.deleteBlackNum("110");
     }
 }

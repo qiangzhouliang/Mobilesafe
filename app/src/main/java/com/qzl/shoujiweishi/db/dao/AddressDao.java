@@ -1,4 +1,4 @@
-package com.qzl.shoujiweishi.db;
+package com.qzl.shoujiweishi.db.dao;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -18,10 +17,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qzl.shoujiweishi.R;
-import com.qzl.shoujiweishi.db.AddressDao;
+import com.qzl.shoujiweishi.db.dao.AddressDao;
 
 public class AddressServices extends Service {
     private TelephonyManager telephonyManager;
