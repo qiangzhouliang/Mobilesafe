@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class DragViewActivity extends Activity {
 
@@ -18,6 +19,25 @@ public class DragViewActivity extends Activity {
         sp = getSharedPreferences("config",MODE_PRIVATE);
         setContentView(R.layout.activity_drag_view);
         ll_dragview_toast = (LinearLayout) findViewById(R.id.ll_dragview_toast);
+        //设置控件的回显操作
+        //1.获取保存的左边
+        int x = sp.getInt("x",0);
+        int y = sp.getInt("y",0);
+        System.out.println("x :"+x+"  y :"+y);
+        //2.重新绘制控件
+        //获取控件的宽高，在oncreate里面无法获取控件的宽高
+        /*int width = ll_dragview_toast.getWidth();
+        int height = ll_dragview_toast.getHeight();
+        System.out.println("width :"+width+" height :"+height);
+        ll_dragview_toast.layout(x,y,x+width,y+height);*/
+        //在初始化控件之前，重新设置控件的属性
+        //获取父控件的属性规则，父控件的layoutparams
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ll_dragview_toast.getLayoutParams();
+        //设置相应的属性
+        //leftMargin: 距离父控件左边框的距离，跟布局文件中layout_marginLeft属性相似
+        layoutParams.leftMargin = x;
+        layoutParams.topMargin = y;
+        ll_dragview_toast.setLayoutParams(layoutParams);
         setTouch();
     }
 
