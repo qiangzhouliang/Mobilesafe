@@ -25,9 +25,6 @@ public class CallSmsSafeActivity extends Activity {
     private ProgressBar loading;
     private BlackNumDao blackNumDao;
     private List<BlackNumInfo> queryAllBlackNum;
-    private ImageView iv_itemcallsmssfe_delete;
-    private TextView tv_itemcallsmssafe_blacknum;
-    private TextView tv_itemcallsmssafe_mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,28 +83,53 @@ public class CallSmsSafeActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             //根据条目的位置获取对应的bean对象
             BlackNumInfo blackNumInfo = queryAllBlackNum.get(position);
-            View view = View.inflate(getApplicationContext(),R.layout.item_callsmssafe,null);
-            tv_itemcallsmssafe_blacknum = (TextView) view.findViewById(R.id.tv_itemcallsmssafe_blacknum);
-            tv_itemcallsmssafe_mode = (TextView) view.findViewById(R.id.tv_itemcallsmssafe_mode);
-            iv_itemcallsmssfe_delete = (ImageView) view.findViewById(R.id.iv_itemcallsmssfe_delete);
+            View view;
+            ViewHolder viewHolder;
+            if(convertView == null) {
+                view = View.inflate(getApplicationContext(), R.layout.item_callsmssafe, null);
+                //创建控件容器
+                viewHolder = new ViewHolder();
+                //把控件存放到容器中
+                viewHolder.tv_itemcallsmssafe_blacknum = (TextView) view.findViewById(R.id.tv_itemcallsmssafe_blacknum);
+                viewHolder.tv_itemcallsmssafe_mode = (TextView) view.findViewById(R.id.tv_itemcallsmssafe_mode);
+                viewHolder.iv_itemcallsmssfe_delete = (ImageView) view.findViewById(R.id.iv_itemcallsmssfe_delete);
+                //将容器和view绑定在一起
+                view.setTag(viewHolder);
+            }else {
+                view = convertView;
+                //从view中得到控件的容器
+                viewHolder = (ViewHolder) view.getTag();
+            }
+            /*if (convertView == null){
+                convertView = View.inflate(getApplicationContext(), R.layout.item_callsmssafe, null);
+            }*/
 
             //设置显示数据
-            tv_itemcallsmssafe_blacknum.setText(blackNumInfo.getBlacknum());
+            viewHolder.tv_itemcallsmssafe_blacknum.setText(blackNumInfo.getBlacknum());
             int mode = blackNumInfo.getMode();
             switch (mode){
                 case BlackNumDao.CALL:
-                    tv_itemcallsmssafe_mode.setText("电话拦截");
+                    viewHolder.tv_itemcallsmssafe_mode.setText("电话拦截");
                    break;
                 case BlackNumDao.SMS:
-                    tv_itemcallsmssafe_mode.setText("短信拦截");
+                    viewHolder.tv_itemcallsmssafe_mode.setText("短信拦截");
                     break;
                 case BlackNumDao.ALL:
-                    tv_itemcallsmssafe_mode.setText("全部拦截");
+                    viewHolder.tv_itemcallsmssafe_mode.setText("全部拦截");
                     break;
                 default:
                     break;
             }
             return view;
         }
+    }
+
+    /**
+     * 存放控件的容器
+     * cunfang
+     */
+    class ViewHolder{
+        TextView tv_itemcallsmssafe_blacknum,tv_itemcallsmssafe_mode;
+        ImageView iv_itemcallsmssfe_delete;
     }
 }
