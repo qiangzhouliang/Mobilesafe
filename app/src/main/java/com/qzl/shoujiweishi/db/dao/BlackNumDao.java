@@ -120,7 +120,7 @@ public class BlackNumDao {
         // 1 获取数据库
         SQLiteDatabase database = blackNumOpenHlper.getReadableDatabase();
         //2 查询数据库
-        Cursor cursor = database.query(BlackNumOpenHlper.DB_NAME,new String[]{"blacknum","mode"},null,null,null,null,null);
+        Cursor cursor = database.query(BlackNumOpenHlper.DB_NAME,new String[]{"blacknum","mode"},null,null,null,null,"_id desc");//desc 倒叙查询，asc 正序查询
         //解析cursor
         while (cursor.moveToNext()){
             //获取查询出来的数据
