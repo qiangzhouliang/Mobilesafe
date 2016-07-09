@@ -1,6 +1,8 @@
 package com.qzl.shoujiweishi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ public class CallSmsSafeActivity extends Activity {
     private ProgressBar loading;
     private BlackNumDao blackNumDao;
     private List<BlackNumInfo> queryAllBlackNum;
+    private MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class CallSmsSafeActivity extends Activity {
         blackNumDao = new BlackNumDao(getApplicationContext());
         lv_callsmssafe_blacknum = (ListView) findViewById(R.id.lv_callsmssafe_blacknum);
         loading = (ProgressBar) findViewById(R.id.loading);
+        //加载数据库的操作
         fillData();
     }
 
@@ -50,16 +54,26 @@ public class CallSmsSafeActivity extends Activity {
             //在子线程中
             @Override
             public void doinBack() {
+                myAdapter = new MyAdapter();
                 queryAllBlackNum = blackNumDao.queryAllBlackNum();
             }
             //在子线程之后
             @Override
             public void postTask() {
-                lv_callsmssafe_blacknum.setAdapter(new MyAdapter());
+                lv_callsmssafe_blacknum.setAdapter(myAdapter);
                 //数据显示完成，隐藏进度条
                 loading.setVisibility(View.INVISIBLE);
             }
         }.execute();
+    }
+
+    /**
+     * 添加黑名单点击事件
+     * @param view
+     */
+    public void addBlackNum(View view) {
+        //弹出对话框提醒用户添加黑名单
+        
     }
 
     private class MyAdapter extends BaseAdapter{
@@ -80,9 +94,9 @@ public class CallSmsSafeActivity extends Activity {
         }
         //设置条目显示的样式
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             //根据条目的位置获取对应的bean对象
-            BlackNumInfo blackNumInfo = queryAllBlackNum.get(position);
+            final BlackNumInfo blackNumInfo = queryAllBlackNum.get(position);
             View view;
             ViewHolder viewHolder;
             if(convertView == null) {
@@ -120,6 +134,34 @@ public class CallSmsSafeActivity extends Activity {
                 default:
                     break;
             }
+            //删除黑名单
+            viewHolder.iv_itemcallsmssfe_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //删除黑名单操作
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CallSmsSafeActivity.this);
+                    builder.setMessage("您确认要删除黑名单号码："+blackNumInfo.getBlacknum()+"?");
+                    //设置确定和取消
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //删除黑名单操作
+                            //1 删除数据库中的黑名单号码
+                            blackNumDao.deleteBlackNum(blackNumInfo.getBlacknum());
+                            //2 删除界面中已经显示的黑名单号码
+                            // 2.1 将存放有所有数据的queryAllBlackNum集合中删除相应的数据
+                            queryAllBlackNum.remove(position);//删除条目对应位置的相应的数据
+                            // 2.2 更新界面
+                            myAdapter.notifyDataSetChanged();//更新界面
+                            //3 隐藏对话框
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton("取消",null);//只是隐藏操作
+                    //显示对话框
+                    builder.show();
+                }
+            });
             return view;
         }
     }

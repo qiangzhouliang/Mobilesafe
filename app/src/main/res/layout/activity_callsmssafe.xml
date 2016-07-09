@@ -10,17 +10,28 @@
         layout_marginTop : 距离某控件的距离
         paddingTop ：距离控件内边框的距离,距离textView控件内顶边框的距离
     -->
-
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="通讯卫士"
-        android:id="@+id/textView"
-        android:background="#8866ff00"
-        android:gravity="center_horizontal"
-        android:textSize="22sp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"/>
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="通讯卫士"
+            android:id="@+id/textView"
+            android:background="#8866ff00"
+            android:gravity="center_horizontal"
+            android:textSize="22sp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加"
+            android:textColor="#000000"
+            android:layout_alignParentRight="true"
+            android:onClick="addBlackNum"/>
+    </RelativeLayout>
+
     <!-- FrameLayout : 再布局文件中控件越往下，显示的时候在最上方-->
     <FrameLayout
         android:layout_width="match_parent"
