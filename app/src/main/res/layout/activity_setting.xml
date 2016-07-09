@@ -46,4 +46,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+    <com.qzl.shoujiweishi.ui.SettingView
+        android:id="@+id/sv_setting_blacknum"
+        android:layout_width="match_parent"
+        qzl:text="黑名单拦截"
+        qzl:des_on="打开黑名单拦截"
+        qzl:des_off="关闭黑名单拦截"
+        android:layout_height="wrap_content" />
 </LinearLayout>

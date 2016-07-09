@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 
 import com.lidroid.xutils.util.core.LruDiskCache;
 import com.qzl.shoujiweishi.service.AddressServices;
+import com.qzl.shoujiweishi.service.BlackNumService;
 import com.qzl.shoujiweishi.ui.SettingClickView;
 import com.qzl.shoujiweishi.ui.SettingView;
 import com.qzl.shoujiweishi.utils.AddressUtils;
@@ -22,6 +23,8 @@ public class SettingActivity extends Activity {
     private SettingView sv_setting_address;//号码归属地
     private SettingClickView scv_setting_changedbg;
     private SettingClickView scv_setting_location_toast;
+    private SettingView sv_setting_blacknum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,7 @@ public class SettingActivity extends Activity {
         sv_setting_address = (SettingView) findViewById(R.id.sv_setting_address);
         scv_setting_changedbg = (SettingClickView) findViewById(R.id.scv_setting_changedbg);
         scv_setting_location_toast = (SettingClickView) findViewById(R.id.scv_setting_location_toast);
+        sv_setting_blacknum = (SettingView) findViewById(R.id.sv_setting_blacknum);
 
         update();
         changedbg();
@@ -105,7 +109,6 @@ public class SettingActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        address();
     }
     //没有焦点时调运
     @Override
@@ -116,11 +119,47 @@ public class SettingActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        address();
+        blackNum();
     }
+
     //activity不可见时调运
     @Override
     protected void onStop() {
         super.onStop();
+    }
+    /**
+     *黑名单拦截的操作
+     */
+    private void blackNum() {
+        //回显操作
+        //动态的获取服务是否开启
+        System.out.println(getLocalClassName());
+        if(AddressUtils.isRunningService("com.qzl.shoujiweishi.service.BlackNumService",getApplicationContext())){
+            //开启服务
+            sv_setting_blacknum.setChecked(true);
+        }else {
+            //关闭服务
+            sv_setting_blacknum.setChecked(false);
+        }
+        sv_setting_blacknum.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingActivity.this, BlackNumService.class);
+                //根据checkBox的状态设置描述信息的状态
+                // isChecked : 代表之前的状态
+                if(sv_setting_blacknum.isChecked()){
+                    //关闭提示更新
+                    stopService(intent);
+                    //更新checkBox的状态
+                    sv_setting_blacknum.setChecked(false);
+                }else {
+                    //打开提示更新
+                    startService(intent);
+                    sv_setting_blacknum.setChecked(true);
+                }
+            }
+        });
     }
 
     /**
