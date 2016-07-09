@@ -57,9 +57,8 @@
         <activity android:name=".ContactActivity" />
         <activity android:name=".AToolsActivity" />
         <activity android:name=".AddressActivity" />
-        <activity android:name=".DragViewActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
+        <activity android:name=".DragViewActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name=".CallSmsSafeActivity"/>
         <receiver
             android:name=".receiver.BootCompleteReceiver"
             android:enabled="true"

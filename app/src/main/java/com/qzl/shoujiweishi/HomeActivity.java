@@ -51,6 +51,11 @@ public class HomeActivity extends AppCompatActivity {
                             showEnterPassWordDoalog();
                         }
                         break;
+                    case 1:
+                        //通讯卫士
+                        Intent intent2 = new Intent(HomeActivity.this,CallSmsSafeActivity.class);
+                        startActivity(intent2);
+                        break;
                     case 7:
                         Intent intent7 = new Intent(HomeActivity.this,AToolsActivity.class);
                         startActivity(intent7);

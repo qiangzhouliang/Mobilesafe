@@ -4,6 +4,7 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 import android.text.TextUtils;
 
+import com.qzl.shoujiweishi.bean.BlackNumInfo;
 import com.qzl.shoujiweishi.db.BlackNumOpenHlper;
 import com.qzl.shoujiweishi.db.dao.AddressDao;
 import com.qzl.shoujiweishi.db.dao.BlackNumDao;
@@ -11,6 +12,7 @@ import com.qzl.shoujiweishi.engine.ContactEngine;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -64,7 +66,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     //测试BlackNumOpenHlper添加操作
     public void testAddBlackNum(){
         //BlackNumDao blackNumDao = new BlackNumDao(getContext());
-        blackNumDao.addBlackNum("110",BlackNumDao.SMS);
+        Random random = new Random();
+        //random.nextInt(3);//0-2 [0-3)
+        for (int i = 0; i < 200; i++) {
+            blackNumDao.addBlackNum("12345678"+i,random.nextInt(3));
+        }
     }
     //测试BlackNumOpenHlper更新黑名单操作
     public void testUpdateBlackNum(){
@@ -82,5 +88,12 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public void testDeleteBlackNumMode(){
         //BlackNumDao blackNumDao = new BlackNumDao(getContext());
         blackNumDao.deleteBlackNum("110");
+    }
+    //查询所有黑名单测试
+    public void testQueryAllBlackNum(){
+        List<BlackNumInfo> queryAllBlackNum = blackNumDao.queryAllBlackNum();
+        for (BlackNumInfo blackNumInfo:queryAllBlackNum) {
+            System.out.println(blackNumInfo.toString());
+        }
     }
 }

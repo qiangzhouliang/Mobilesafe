@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.qzl.shoujiweishi.bean.BlackNumInfo;
 import com.qzl.shoujiweishi.db.BlackNumOpenHlper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Qzl on 2016-07-07.
@@ -106,5 +110,28 @@ public class BlackNumDao {
         database.delete(BlackNumOpenHlper.DB_NAME,"blacknum=?",new String[]{blacknum});
         //3 关闭数据库
         database.close();
+    }
+
+    /**
+     * 查询全部黑名单号码
+     */
+    public List<BlackNumInfo> queryAllBlackNum(){
+        List<BlackNumInfo> list = new ArrayList<>();
+        // 1 获取数据库
+        SQLiteDatabase database = blackNumOpenHlper.getReadableDatabase();
+        //2 查询数据库
+        Cursor cursor = database.query(BlackNumOpenHlper.DB_NAME,new String[]{"blacknum","mode"},null,null,null,null,null);
+        //解析cursor
+        while (cursor.moveToNext()){
+            //获取查询出来的数据
+            String blacknum = cursor.getString(0);
+            int mode = cursor.getInt(1);
+            BlackNumInfo blackNumInfo = new BlackNumInfo(blacknum,mode);
+            list.add(blackNumInfo);
+        }
+        //4 关闭数据库
+        cursor.close();
+        database.close();
+        return list;
     }
 }
