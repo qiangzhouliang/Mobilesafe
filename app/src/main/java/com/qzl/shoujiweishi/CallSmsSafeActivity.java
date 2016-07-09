@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,9 +32,11 @@ public class CallSmsSafeActivity extends Activity {
     private ListView lv_callsmssafe_blacknum;
     private ProgressBar loading;
     private BlackNumDao blackNumDao;
-    private List<BlackNumInfo> queryAllBlackNum;
+    private List<BlackNumInfo> queryAllBlackNumList;
     private MyAdapter myAdapter;
     private AlertDialog dialog;
+    private final int MAXNUM = 20;//查询的总个数
+    private int startIndex = 0;//起始位置
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,35 @@ public class CallSmsSafeActivity extends Activity {
         loading = (ProgressBar) findViewById(R.id.loading);
         //加载数据库的操作
         fillData();
+        //listView的滑动监听事件
+        lv_callsmssafe_blacknum.setOnScrollListener(new AbsListView.OnScrollListener() {
+            //滑动状态改变的时候调运的方法
+            // view : listView
+            //scrollState:滑动状态:
+            // SCROLL_STATE_IDLE:空闲状态
+            // SCROLL_STATE_FLING:快速滑动的状态
+            // SCROLL_STATE_TOUCH_SCROLL:缓慢滑动的状态
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                //当listView禁止的时候，判断界面显示的数据是否是查询数据的最后 一个条目，是加载下一波数据，不是，用户进行其他操作
+                if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
+                    //获取界面显示的最后一个条目
+                    int position = lv_callsmssafe_blacknum.getLastVisiblePosition();//获取界面显示出来的最后一个条目，返回的是条目的位置
+                    //判断是否是查询数据的最后一个数据
+                    if(position == queryAllBlackNumList.size()-1){
+                        //加载下一波数据
+                        //更新查询的起始位置0 - 19   ——》20-39
+                        startIndex += MAXNUM;
+                        fillData();
+                    }
+                }
+            }
+            //当滑动的时候调运的方法
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
     /**
@@ -60,13 +92,26 @@ public class CallSmsSafeActivity extends Activity {
             //在子线程中
             @Override
             public void doinBack() {
-                myAdapter = new MyAdapter();
-                queryAllBlackNum = blackNumDao.queryAllBlackNum();
+                if(queryAllBlackNumList == null){
+                    //1,2,3     4,5,6
+                    queryAllBlackNumList = blackNumDao.getPartBlackNum(MAXNUM,startIndex);
+                }else {
+                    //addAll:将一个集合整合到另一个集合里
+                    queryAllBlackNumList.addAll(blackNumDao.getPartBlackNum(MAXNUM,startIndex));
+                }
+
             }
             //在子线程之后
             @Override
             public void postTask() {
-                lv_callsmssafe_blacknum.setAdapter(myAdapter);
+                //表示第一次加载，就去加载myAdapter
+                if(myAdapter == null) {
+                    myAdapter = new MyAdapter();
+                    lv_callsmssafe_blacknum.setAdapter(myAdapter);
+                }else {
+                    //不是第一次，更新操作myAdapter
+                    myAdapter.notifyDataSetChanged();//更新操作
+                }
                 //数据显示完成，隐藏进度条
                 loading.setVisibility(View.INVISIBLE);
             }
@@ -123,7 +168,7 @@ public class CallSmsSafeActivity extends Activity {
                 //2 添加到界面显示
                 // 2.1 添加到list集合中
                 //queryAllBlackNum.add(new BlackNumInfo(blacknum,mode));//此方法就添加到最后了
-                queryAllBlackNum.add(0,new BlackNumInfo(blacknum,mode));//locaton:参数二要填加的位置
+                queryAllBlackNumList.add(0,new BlackNumInfo(blacknum,mode));//locaton:参数二要填加的位置
                 //2.2 更新界面
                 myAdapter.notifyDataSetChanged();
                 //隐藏对话框
@@ -148,12 +193,12 @@ public class CallSmsSafeActivity extends Activity {
         //设置条目个数
         @Override
         public int getCount() {
-            return queryAllBlackNum.size();
+            return queryAllBlackNumList.size();
         }
         //获取条目对应的数据
         @Override
         public Object getItem(int position) {
-            return queryAllBlackNum.get(position);
+            return queryAllBlackNumList.get(position);
         }
         //获取条目ID
         @Override
@@ -164,7 +209,7 @@ public class CallSmsSafeActivity extends Activity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             //根据条目的位置获取对应的bean对象
-            final BlackNumInfo blackNumInfo = queryAllBlackNum.get(position);
+            final BlackNumInfo blackNumInfo = queryAllBlackNumList.get(position);
             View view;
             ViewHolder viewHolder;
             if(convertView == null) {
@@ -218,7 +263,7 @@ public class CallSmsSafeActivity extends Activity {
                             blackNumDao.deleteBlackNum(blackNumInfo.getBlacknum());
                             //2 删除界面中已经显示的黑名单号码
                             // 2.1 将存放有所有数据的queryAllBlackNum集合中删除相应的数据
-                            queryAllBlackNum.remove(position);//删除条目对应位置的相应的数据
+                            queryAllBlackNumList.remove(position);//删除条目对应位置的相应的数据
                             // 2.2 更新界面
                             myAdapter.notifyDataSetChanged();//更新界面
                             //3 隐藏对话框

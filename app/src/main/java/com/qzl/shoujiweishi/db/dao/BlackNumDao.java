@@ -134,4 +134,32 @@ public class BlackNumDao {
         database.close();
         return list;
     }
+
+    /**
+     *查询部分数据的方法
+     * 查询20条数据
+     * MaxNum:查询总个数
+     * startindex：查询起始位置
+     * @return
+     */
+    public List<BlackNumInfo> getPartBlackNum(int MaxNum,int startindex){
+        List<BlackNumInfo> list = new ArrayList<>();
+        // 1 获取数据库
+        SQLiteDatabase database = blackNumOpenHlper.getReadableDatabase();
+        //2 查询数据库
+        //Cursor cursor = database.query(BlackNumOpenHlper.DB_NAME,new String[]{"blacknum","mode"},null,null,null,null,"_id desc");//desc 倒叙查询，asc 正序查询
+        Cursor cursor = database.rawQuery("select blacknum,mode from info order by _id desc limit ? offset ?",new String[]{MaxNum+"",startindex+""});
+        //解析cursor
+        while (cursor.moveToNext()){
+            //获取查询出来的数据
+            String blacknum = cursor.getString(0);
+            int mode = cursor.getInt(1);
+            BlackNumInfo blackNumInfo = new BlackNumInfo(blacknum,mode);
+            list.add(blackNumInfo);
+        }
+        //4 关闭数据库
+        cursor.close();
+        database.close();
+        return list;
+    }
 }
