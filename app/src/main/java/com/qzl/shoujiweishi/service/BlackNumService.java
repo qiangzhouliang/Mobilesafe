@@ -7,7 +7,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
@@ -59,7 +61,7 @@ public class BlackNumService extends Service {
 
     private class MyPhoneStateListener extends PhoneStateListener{
         @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
+        public void onCallStateChanged(int state, final String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
             //如果是响铃状态，检测拦截模式是否是电话拦截，是挂断
             if(state == TelephonyManager.CALL_STATE_RINGING){
@@ -70,12 +72,25 @@ public class BlackNumService extends Service {
                     endCall();
                     //删除通话记录
                     // 1 获取内容提供者
-                    ContentResolver resolver = getContentResolver();
+                    final ContentResolver resolver = getContentResolver();
                     //2 获取内容提供者地址 call_log  calls 表的地址：calls
                     //3 获取执行操作路径
-                    Uri uri = Uri.parse("content://call_log/calls");
+                    final Uri uri = Uri.parse("content://call_log/calls");
                     //4 删除操作
-                    resolver.delete(uri,"number=?",new String[]{incomingNumber});
+                    //resolver.delete(uri,"number=?",new String[]{incomingNumber});
+                    //通过内容观察者观察内容提供者的内容变化，如果变化，就去执行删除操作
+                    //notifyForDescendents:匹配规则，true：表示精确匹配，false ：模糊匹配
+                    resolver.registerContentObserver(uri, true, new ContentObserver(new Handler()) {
+                        //内容提供者内容变化的时候调运
+                        @Override
+                        public void onChange(boolean selfChange) {
+                            super.onChange(selfChange);
+                            //删除通话记录
+                            resolver.delete(uri,"number=?",new String[]{incomingNumber});
+                            //注销内容观察者
+                            resolver.unregisterContentObserver(this);
+                        }
+                    });
                 }
             }
         }
