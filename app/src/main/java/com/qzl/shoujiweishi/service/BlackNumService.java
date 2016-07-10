@@ -2,9 +2,12 @@ package com.qzl.shoujiweishi.service;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.IBinder;
 import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
@@ -65,7 +68,14 @@ public class BlackNumService extends Service {
                 if(mode == BlackNumDao.CALL || mode == BlackNumDao.ALL){
                     //挂断电话 1.5
                     endCall();
-
+                    //删除通话记录
+                    // 1 获取内容提供者
+                    ContentResolver resolver = getContentResolver();
+                    //2 获取内容提供者地址 call_log  calls 表的地址：calls
+                    //3 获取执行操作路径
+                    Uri uri = Uri.parse("content://call_log/calls");
+                    //4 删除操作
+                    resolver.delete(uri,"number=?",new String[]{incomingNumber});
                 }
             }
         }
