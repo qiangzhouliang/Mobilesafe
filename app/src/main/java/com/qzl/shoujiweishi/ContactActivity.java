@@ -96,8 +96,6 @@ public class ContactActivity extends AppCompatActivity {
                 setResult(RESULT_OK, intent);
                 //移除界面
                 finish();
-
-
             }
         });
     }

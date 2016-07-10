@@ -51,7 +51,6 @@ public class BlackNumService extends Service {
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
         //3 注册广播接收者
         registerReceiver(smsReceiver,intentFilter);
-
         //监听电话状态
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         myPhoneStateListener = new MyPhoneStateListener();
