@@ -122,6 +122,55 @@ public class TaskManagerActivity extends AppCompatActivity {
             }
         }.execute();
     }
+
+    /**
+     *全选点击事件
+     * @param view
+     */
+    public void all(View view) {
+        //用户进程
+        for (int i = 0; i < userappinfo.size(); i++) {
+            userappinfo.get(i).setIschecked(true);
+        }
+        //系统进程
+        for (int i = 0; i < systemappinfo.size(); i++) {
+            systemappinfo.get(i).setIschecked(true);
+        }
+        //更新界面
+        myAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 取消全选
+     * @param view
+     */
+    public void cancel(View view) {
+        //用户进程
+        for (int i = 0; i < userappinfo.size(); i++) {
+            userappinfo.get(i).setIschecked(false);
+        }
+        //系统进程
+        for (int i = 0; i < systemappinfo.size(); i++) {
+            systemappinfo.get(i).setIschecked(false);
+        }
+        //更新界面
+        myAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 清理
+     * @param view
+     */
+    public void clear(View view) {
+    }
+
+    /**
+     * 设置
+     * @param view
+     */
+    public void setting(View view) {
+    }
+
     private class MyAdapter extends BaseAdapter {
         //获取总条目数
         @Override

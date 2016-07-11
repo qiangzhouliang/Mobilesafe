@@ -48,7 +48,8 @@
     </LinearLayout>-->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
         <ListView
             android:id="@+id/lv_taskmanager_processes"
             android:layout_width="match_parent"
@@ -70,5 +71,34 @@
             android:layout_gravity="center"
             android:indeterminateDrawable="@drawable/progressbar_drawable"/>
     </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="全选"
+            android:onClick="all"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:onClick="cancel"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="清理"
+            android:onClick="clear"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            android:onClick="setting"/>
+    </LinearLayout>
 </LinearLayout>
 
