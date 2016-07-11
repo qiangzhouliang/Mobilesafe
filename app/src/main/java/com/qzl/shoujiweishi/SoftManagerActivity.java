@@ -17,6 +17,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -30,7 +31,7 @@ import com.qzl.shoujiweishi.utils.MyAsycnTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoftManagerActivity extends AppCompatActivity {
+public class SoftManagerActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ListView lv_softmanager_application;
     private ProgressBar loading;
@@ -85,6 +86,18 @@ public class SoftManagerActivity extends AppCompatActivity {
                 hidePopuwindow();
                 //3 弹出气泡
                 View contentView = View.inflate(getApplicationContext(),R.layout.popu_window,null);
+
+                //初始化控件
+                LinearLayout ll_popuwindow_uninstall = (LinearLayout) contentView.findViewById(R.id.ll_popuwindow_uninstall);
+                LinearLayout ll_popuwindow_start = (LinearLayout) contentView.findViewById(R.id.ll_popuwindow_start);
+                LinearLayout ll_popuwindow_share = (LinearLayout) contentView.findViewById(R.id.ll_popuwindow_share);
+                LinearLayout ll_popuwindow_detail = (LinearLayout) contentView.findViewById(R.id.ll_popuwindow_detail);
+                //给控件设置点击事件
+                ll_popuwindow_uninstall.setOnClickListener(SoftManagerActivity.this);
+                ll_popuwindow_start.setOnClickListener(SoftManagerActivity.this);
+                ll_popuwindow_share.setOnClickListener(SoftManagerActivity.this);
+                ll_popuwindow_detail.setOnClickListener(SoftManagerActivity.this);
+
                 //contentView:显示view对象
                 // width，height：view宽高
                 popupWindow = new PopupWindow(contentView, LinearLayoutCompat.LayoutParams.WRAP_CONTENT,LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
@@ -197,6 +210,37 @@ public class SoftManagerActivity extends AppCompatActivity {
             }
         }.execute();
     }
+
+    /**
+     * 按钮点击事件
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        //判断点击的是那个按钮
+        //v.getId() 获取点击按钮的id
+        switch (v.getId()){
+            case R.id.ll_popuwindow_uninstall:
+                //卸载
+                System.out.println("卸载");
+                break;
+            case R.id.ll_popuwindow_start:
+                //启动
+                System.out.println("启动");
+                break;
+            case R.id.ll_popuwindow_share:
+                //分享
+                System.out.println("分享");
+                break;
+            case R.id.ll_popuwindow_detail:
+                //详情
+                System.out.println("详情");
+                break;
+            default:
+                break;
+        }
+    }
+
     private class MyAdapter extends BaseAdapter{
         //获取总条目数
         @Override
