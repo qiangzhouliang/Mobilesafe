@@ -1,6 +1,7 @@
 package com.qzl.shoujiweishi;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -237,6 +238,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             case R.id.ll_popuwindow_start:
                 //启动
                 System.out.println("启动");
+                start();
                 break;
             case R.id.ll_popuwindow_share:
                 //分享
@@ -251,6 +253,20 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
         }
         //隐藏Popuwindow
         hidePopuwindow();
+    }
+
+    /**
+     * 启动的操作
+     */
+    private void start() {
+        PackageManager packageManager = getPackageManager();
+        //获取应用程序的启动意图
+        Intent intent = packageManager.getLaunchIntentForPackage(appInfo.getPackagName());
+        if(intent != null) {
+            startActivity(intent);
+        }else {
+            Toast.makeText(getApplicationContext(), "系统核心程序，无法启动", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
