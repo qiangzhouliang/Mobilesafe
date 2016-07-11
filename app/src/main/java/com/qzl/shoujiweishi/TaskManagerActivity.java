@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qzl.shoujiweishi.bean.TaskInfo;
 import com.qzl.shoujiweishi.engine.TaskEngine;
@@ -73,7 +74,10 @@ public class TaskManagerActivity extends AppCompatActivity {
                 if(taskInfo.ischecked()){
                     taskInfo.setIschecked(false);
                 }else {
-                    taskInfo.setIschecked(true);
+                    //如果是当前应用，不能设置为true
+                    if(!taskInfo.getPaskageName().equals(getPackageName())) {
+                        taskInfo.setIschecked(true);
+                    }
                 }
                 //4 更新界面
                 //myAdapter.notifyDataSetChanged();//更新整个界面
@@ -131,7 +135,9 @@ public class TaskManagerActivity extends AppCompatActivity {
     public void all(View view) {
         //用户进程
         for (int i = 0; i < userappinfo.size(); i++) {
-            userappinfo.get(i).setIschecked(true);
+            if(!userappinfo.get(i).getPaskageName().equals(getPackageName())) {
+                userappinfo.get(i).setIschecked(true);
+            }
         }
         //系统进程
         for (int i = 0; i < systemappinfo.size(); i++) {
@@ -183,6 +189,7 @@ public class TaskManagerActivity extends AppCompatActivity {
                 deleteTaskInos.add(systemappinfo.get(i));//将杀死的进程信息保存到集合中
             }
         }
+        long memory = 0;
         //遍历deleteTaskInos，分别从usernameinfo和systemAppInfos中的数据
         for (TaskInfo taskIno : deleteTaskInos) {
             if (taskIno.isUser()){
@@ -190,7 +197,11 @@ public class TaskManagerActivity extends AppCompatActivity {
             }else {
                 systemappinfo.remove(taskIno);
             }
+            memory += taskIno.getRamSize();
         }
+        //数据转换
+        String deletesize = Formatter.formatFileSize(getApplicationContext(),memory);
+        Toast.makeText(getApplicationContext(), "共清理"+deleteTaskInos.size()+"个进程，释放"+deletesize+"内存空间", Toast.LENGTH_SHORT).show();
         //为下次清理进程做准备
         deleteTaskInos.clear();
         deleteTaskInos = null;
@@ -287,6 +298,12 @@ public class TaskManagerActivity extends AppCompatActivity {
                 viewHolder.cb_itemtaskmanager_ischecked.setChecked(true);
             }else {
                 viewHolder.cb_itemtaskmanager_ischecked.setChecked(false);
+            }
+            //判断如果是我们的应用程序的话，就吧checkbox隐藏，不是的话，就显示,在getView中，有if必须有else
+            if(taskInfo.getPaskageName().equals(getPackageName())){
+                viewHolder.cb_itemtaskmanager_ischecked.setVisibility(View.INVISIBLE);
+            }else {
+                viewHolder.cb_itemtaskmanager_ischecked.setVisibility(View.VISIBLE);
             }
             return view;
         }
