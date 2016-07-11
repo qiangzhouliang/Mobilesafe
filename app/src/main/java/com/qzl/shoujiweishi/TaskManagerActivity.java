@@ -1,5 +1,6 @@
 package com.qzl.shoujiweishi;
 
+import android.app.ActivityManager;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -162,6 +163,39 @@ public class TaskManagerActivity extends AppCompatActivity {
      * @param view
      */
     public void clear(View view) {
+        //1 获取进程的管理者
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        //保存杀死进程信息的集合
+        List<TaskInfo> deleteTaskInos = new ArrayList<>();
+        for (int i = 0; i < userappinfo.size(); i++) {
+            if (userappinfo.get(i).ischecked()){
+                //杀死进程
+                //packageName：进程的包名，杀死后台进程
+                activityManager.killBackgroundProcesses(userappinfo.get(i).getPaskageName());
+                deleteTaskInos.add(userappinfo.get(i));//将杀死的进程信息保存到集合中
+            }
+        }
+        for (int i = 0; i < systemappinfo.size(); i++) {
+            if (systemappinfo.get(i).ischecked()){
+                //杀死进程
+                //packageName：进程的包名，杀死后台进程
+                activityManager.killBackgroundProcesses(systemappinfo.get(i).getPaskageName());
+                deleteTaskInos.add(systemappinfo.get(i));//将杀死的进程信息保存到集合中
+            }
+        }
+        //遍历deleteTaskInos，分别从usernameinfo和systemAppInfos中的数据
+        for (TaskInfo taskIno : deleteTaskInos) {
+            if (taskIno.isUser()){
+                userappinfo.remove(taskIno);
+            }else {
+                systemappinfo.remove(taskIno);
+            }
+        }
+        //为下次清理进程做准备
+        deleteTaskInos.clear();
+        deleteTaskInos = null;
+        //更新界面
+        myAdapter.notifyDataSetChanged();
     }
 
     /**
