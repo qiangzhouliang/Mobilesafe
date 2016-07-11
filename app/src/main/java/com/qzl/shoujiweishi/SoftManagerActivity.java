@@ -5,10 +5,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.qzl.shoujiweishi.bean.AppInfo;
 import com.qzl.shoujiweishi.engine.AppEngine;
+import com.qzl.shoujiweishi.utils.AppUtil;
 import com.qzl.shoujiweishi.utils.MyAsycnTask;
 
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
     private TextView tv_softmanager_usetorsystem;
     private PopupWindow popupWindow;
     private MyAdapter myAdapter;
+    private TextView tv_softmanager_rom;
+    private TextView tv_softmanager_sd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,17 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
         lv_softmanager_application = (ListView) findViewById(R.id.lv_softmanager_application);
         loading = (ProgressBar) findViewById(R.id.loading);
         tv_softmanager_usetorsystem = (TextView) findViewById(R.id.tv_softmanager_usetorsystem);
+        tv_softmanager_rom = (TextView) findViewById(R.id.tv_softmanager_rom);
+        tv_softmanager_sd = (TextView) findViewById(R.id.tv_softmanager_SD);
+        //获取可用内存，获取都是kb
+        long availableSD = AppUtil.getAvailableSD();
+        long availableROM = AppUtil.getAvailableROM();
+        //数据转化
+        String sdsize = Formatter.formatFileSize(getApplicationContext(), availableSD);
+        String romsize = Formatter.formatFileSize(getApplicationContext(), availableROM);
+        //设置显示
+        tv_softmanager_sd.setText("SD卡可用："+sdsize);
+        tv_softmanager_rom.setText("内存可用："+romsize);
         //加载数据
         fillData();
         //listView的滑动监听事件
