@@ -1,14 +1,19 @@
 package com.qzl.shoujiweishi;
 
 import android.graphics.Color;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,11 +30,13 @@ public class SoftManagerActivity extends AppCompatActivity {
     private ListView lv_softmanager_application;
     private ProgressBar loading;
     private List<AppInfo> list;
+    AppInfo appInfo;
     //用户的程序的集合
     private List<AppInfo> userappinfo;
     //系统程序的集合
     private List<AppInfo> systemappinfo;
     private TextView tv_softmanager_usetorsystem;
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +48,62 @@ public class SoftManagerActivity extends AppCompatActivity {
         tv_softmanager_usetorsystem = (TextView) findViewById(R.id.tv_softmanager_usetorsystem);
         //加载数据
         fillData();
+        //listView的滑动监听事件
         listViewOnscroll();
+        //listView条目的点击事件
+        listViewItemOnclick();
+    }
+
+    /**
+     * listView条目的点击事件
+     */
+    private void listViewItemOnclick() {
+        lv_softmanager_application.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //view : 条目的对象
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //弹出气泡
+                // 1 屏蔽用户程序和系统程序（。。。个）弹出气泡
+                if(position == 0 || position == userappinfo.size()+1){
+                    return;
+                }
+                //2 获取条目所对应的应用程序的信息
+                //数据就要从userappinfo和systemappinfo中获取
+                if(position <= (userappinfo.size())){
+                    //用户程序中获取
+                    appInfo = userappinfo.get(position-1);
+                }else {
+                    //系统程序中获取
+                    appInfo = systemappinfo.get(position - userappinfo.size() - 2);
+                }
+                //5 弹出新的气泡之前，先删除旧的气泡
+                hidePopuwindow();
+                //3 弹出气泡
+                View contentView = View.inflate(getApplicationContext(),R.layout.popu_window,null);
+                //contentView:显示view对象
+                // width，height：view宽高
+                popupWindow = new PopupWindow(contentView, LinearLayoutCompat.LayoutParams.WRAP_CONTENT,LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+                //4 获取条目的位置，让气泡显示在相应的位置上
+                int[] location = new int[2];//保存x和y坐标的数组
+                view.getLocationInWindow(location);//获取条目x和y的坐标，同时保存到int[]
+                //获取x和y的坐标
+                int x = location[0];
+                int y = location[1];
+                //parent:要挂在在哪个控件上
+                // gravity，x,y:控制控件显示的位置
+                popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,x+50,y);
+            }
+        });
+    }
+
+    /**
+     *隐藏气泡的方法
+     */
+    private void hidePopuwindow() {
+        if(popupWindow != null){
+            popupWindow.dismiss();
+            popupWindow = null;
+        }
     }
 
     /**
@@ -61,6 +123,8 @@ public class SoftManagerActivity extends AppCompatActivity {
             // totalItemCount ： 条目的总个数
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //隐藏气泡
+                hidePopuwindow();
                 //为null的原因：listView在初始化的时候就会调运onScroll
                 if(userappinfo != null && systemappinfo != null) {
                     if (firstVisibleItem >= userappinfo.size() + 1) {
@@ -159,7 +223,6 @@ public class SoftManagerActivity extends AppCompatActivity {
                 view.setTag(viewHolder);
             }
             //1 获取应用程序信息
-            AppInfo appInfo;
             //数据就要从userappinfo和systemappinfo中获取
             if(position <= (userappinfo.size())){
                 //用户程序中获取
@@ -188,5 +251,12 @@ public class SoftManagerActivity extends AppCompatActivity {
     static class ViewHolder{
         ImageView iv_itemsoftmanager_icon;
         TextView tv_softmanager_name,tv_softmanager_isSD,tv_softmanager_version;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //隐藏气泡
+        hidePopuwindow();
     }
 }
