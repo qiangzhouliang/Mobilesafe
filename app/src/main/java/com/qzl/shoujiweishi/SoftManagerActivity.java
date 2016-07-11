@@ -247,12 +247,31 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             case R.id.ll_popuwindow_detail:
                 //详情
                 System.out.println("详情");
+                detail();
                 break;
             default:
                 break;
         }
         //隐藏Popuwindow
         hidePopuwindow();
+    }
+
+    /**
+     * 应用详情
+     */
+    private void detail() {
+        /**
+         *  Intent
+         {
+         act=android.settings.APPLICATION_DETAILS_SETTINGS    action
+         dat=package:com.example.android.apis   data
+         cmp=com.android.settings/.applications.InstalledAppDetails
+         } from pid 228
+         */
+        Intent intent = new Intent();
+        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(Uri.parse("package:"+appInfo.getPackagName()));
+        startActivity(intent);
     }
 
     /**
