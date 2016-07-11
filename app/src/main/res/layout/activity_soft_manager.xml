@@ -23,12 +23,20 @@
         android:paddingBottom="5dp"/>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="match_parent">
         <ListView
             android:id="@+id/lv_softmanager_application"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_softmanager_usetorsystem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="用户程序（13）"
+            android:background="#888888"
+            android:textColor="#ffffff"/>
 
         <ProgressBar
             android:id="@+id/loading"

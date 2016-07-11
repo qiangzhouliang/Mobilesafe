@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,6 +29,7 @@ public class SoftManagerActivity extends AppCompatActivity {
     private List<AppInfo> userappinfo;
     //系统程序的集合
     private List<AppInfo> systemappinfo;
+    private TextView tv_softmanager_usetorsystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,39 @@ public class SoftManagerActivity extends AppCompatActivity {
         //初始化控件
         lv_softmanager_application = (ListView) findViewById(R.id.lv_softmanager_application);
         loading = (ProgressBar) findViewById(R.id.loading);
+        tv_softmanager_usetorsystem = (TextView) findViewById(R.id.tv_softmanager_usetorsystem);
         //加载数据
         fillData();
+        listViewOnscroll();
+    }
+
+    /**
+     * listView的滑动监听事件
+     */
+    private void listViewOnscroll() {
+        lv_softmanager_application.setOnScrollListener(new AbsListView.OnScrollListener() {
+            //滑动状态改变的时候调运
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+            //滑动的时候调运
+            // view ： listView
+            // firstVisibleItem： 界面第一个显示的条目
+            // visibleItemCount：显示的条目总个数
+            // totalItemCount ： 条目的总个数
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //为null的原因：listView在初始化的时候就会调运onScroll
+                if(userappinfo != null && systemappinfo != null) {
+                    if (firstVisibleItem >= userappinfo.size() + 1) {
+                        tv_softmanager_usetorsystem.setText("系统程序(" + systemappinfo.size() + ")");
+                    } else {
+                        tv_softmanager_usetorsystem.setText("用户程序(" + userappinfo.size() + ")");
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -79,7 +112,7 @@ public class SoftManagerActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             //list.size() = userappinfo.size() + systemappinfo.size();
-            return userappinfo.size()+systemappinfo.size()+2;
+            return userappinfo.size() + systemappinfo.size() + 2;
         }
         //获取条目对应的数据
         @Override
