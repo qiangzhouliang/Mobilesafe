@@ -1,6 +1,7 @@
 package com.qzl.shoujiweishi;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,10 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -83,6 +88,7 @@ public class SoftManagerActivity extends AppCompatActivity {
                 //contentView:显示view对象
                 // width，height：view宽高
                 popupWindow = new PopupWindow(contentView, LinearLayoutCompat.LayoutParams.WRAP_CONTENT,LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 //4 获取条目的位置，让气泡显示在相应的位置上
                 int[] location = new int[2];//保存x和y坐标的数组
                 view.getLocationInWindow(location);//获取条目x和y的坐标，同时保存到int[]
@@ -92,6 +98,26 @@ public class SoftManagerActivity extends AppCompatActivity {
                 //parent:要挂在在哪个控件上
                 // gravity，x,y:控制控件显示的位置
                 popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,x+50,y);
+                //6 设置动画
+                //缩放动画
+                //前四个：控制控件由没有变成有 动画0：没有  1： 整个控件
+                // 后四个：控制控件是按照自身还是父控件进行操作
+                //RELATIVE_TO_SELF:以自身变化
+                //RELATIVE_TO_PARENT:以父控件变化
+                ScaleAnimation scaleAnimation = new ScaleAnimation(0,1,0,1, Animation.RELATIVE_TO_SELF,0,Animation.RELATIVE_TO_SELF,0.5f);
+                scaleAnimation.setDuration(500);
+                //渐变动画
+                AlphaAnimation alphaAnimation = new AlphaAnimation(0.4f,1.0f);//有半透明变成不透明
+                alphaAnimation.setDuration(500);
+                //组合动画
+                //shareInterpolatoe:是否使用相同的动画插补器 true : 共享，false：各自使用各自的
+                AnimationSet animationSet = new AnimationSet(true);
+                //添加动画
+                animationSet.addAnimation(scaleAnimation);
+                animationSet.addAnimation(alphaAnimation);
+                //执行动画
+                contentView.startAnimation(animationSet);
+
             }
         });
     }
