@@ -15,7 +15,18 @@ public class TaskInfo {
     //包名
     private String paskageName;
     //是否是用户程序
-    boolean isUser;
+    private boolean isUser;
+
+    public boolean ischecked() {
+        return ischecked;
+    }
+
+    public void setIschecked(boolean ischecked) {
+        this.ischecked = ischecked;
+    }
+
+    //checkbox是都被选中
+    private boolean ischecked = false;
 
     public TaskInfo() {
     }

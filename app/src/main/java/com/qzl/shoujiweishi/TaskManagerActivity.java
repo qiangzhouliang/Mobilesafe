@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -42,6 +43,44 @@ public class TaskManagerActivity extends AppCompatActivity {
         loading = (ProgressBar) findViewById(R.id.loading);
         //加载数据
         fillData();
+        //listView的条目点击事件
+        listViewItemClick();
+    }
+
+    /**
+     * listView的条目点击事件
+     */
+    private void listViewItemClick() {
+        lv_taskmanager_processes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //动态改变checkBox状态
+                // 1 屏蔽用户程序和系统程序（。。。个）弹出气泡
+                if(position == 0 || position == userappinfo.size()+1){
+                    return;
+                }
+                //2 获取条目所对应的应用程序的信息
+                //数据就要从userappinfo和systemappinfo中获取
+                if(position <= (userappinfo.size())){
+                    //用户程序中获取
+                    taskInfo = userappinfo.get(position-1);
+                }else {
+                    //系统程序中获取
+                    taskInfo = systemappinfo.get(position - userappinfo.size() - 2);
+                }
+                //3 根据之前保存的checkbox的状态设置点击之后的状态，原先选中，点击之后不选中
+                if(taskInfo.ischecked()){
+                    taskInfo.setIschecked(false);
+                }else {
+                    taskInfo.setIschecked(true);
+                }
+                //4 更新界面
+                //myAdapter.notifyDataSetChanged();//更新整个界面
+                //只更新点击的界面
+                ViewHolder viewHolder = (ViewHolder) view.getTag();
+                viewHolder.cb_itemtaskmanager_ischecked.setChecked(taskInfo.ischecked());
+            }
+        });
     }
 
     /**
@@ -158,7 +197,14 @@ public class TaskManagerActivity extends AppCompatActivity {
             long ramSize = taskInfo.getRamSize();
             //数据转化
             String formatFileSize = Formatter.formatFileSize(getApplicationContext(),ramSize);
-            viewHolder.tv_taskmanager_ram.setText("内存占用"+formatFileSize);
+            viewHolder.tv_taskmanager_ram.setText("内存占用:"+formatFileSize);
+            //因为checkbox的状态会跟着一起复用，所以一般要动态修改的控件的状态，不会跟着去复用，而是将状态保存到bean对象，在每次复用使用控件的时候
+            //根据每个条目对应的bean对象保存的状态，来设置控件显示的相应状态
+            if(taskInfo.ischecked()){
+                viewHolder.cb_itemtaskmanager_ischecked.setChecked(true);
+            }else {
+                viewHolder.cb_itemtaskmanager_ischecked.setChecked(false);
+            }
             return view;
         }
     }
