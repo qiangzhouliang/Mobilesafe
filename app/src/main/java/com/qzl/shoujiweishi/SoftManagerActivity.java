@@ -1,7 +1,9 @@
 package com.qzl.shoujiweishi;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qzl.shoujiweishi.bean.AppInfo;
 import com.qzl.shoujiweishi.engine.AppEngine;
@@ -43,6 +46,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
     private List<AppInfo> systemappinfo;
     private TextView tv_softmanager_usetorsystem;
     private PopupWindow popupWindow;
+    private MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,8 +208,13 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             //在子线程之后
             @Override
             public void postTask() {
-                //用适配器加载数据
-                lv_softmanager_application.setAdapter(new MyAdapter());
+                if(myAdapter == null) {
+                    myAdapter = new MyAdapter();
+                    //用适配器加载数据
+                    lv_softmanager_application.setAdapter(myAdapter);
+                }else {
+                    myAdapter.notifyDataSetChanged();
+                }
                 loading.setVisibility(View.INVISIBLE);//隐藏进度条
             }
         }.execute();
@@ -223,6 +232,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             case R.id.ll_popuwindow_uninstall:
                 //卸载
                 System.out.println("卸载");
+                uninstall();
                 break;
             case R.id.ll_popuwindow_start:
                 //启动
@@ -239,6 +249,44 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             default:
                 break;
         }
+        //隐藏Popuwindow
+        hidePopuwindow();
+    }
+
+    /**
+     * 卸载
+     */
+    private void uninstall() {
+        /**
+         * <intent-filter>
+         <action android:name="android.intent.action.VIEW" />
+         <action android:name="android.intent.action.DELETE" />
+         <category android:name="android.intent.category.DEFAULT" />
+         <data android:scheme="package" />
+         </intent-filter>
+         */
+        //判断是否是系统程序
+        if(appInfo.isUser()) {
+            //判断是否是自己，是不能卸载
+            if (!appInfo.getPackagName().equals(getPackageName())) {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.DELETE");
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setData(Uri.parse("package:" + appInfo.getPackagName()));
+                startActivityForResult(intent, 0);
+            } else {
+                Toast.makeText(getApplicationContext(), "文明社会，杜绝自杀", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(getApplicationContext(), "要想卸载系统程序，请先root", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //重新获取
+        fillData();
     }
 
     private class MyAdapter extends BaseAdapter{
