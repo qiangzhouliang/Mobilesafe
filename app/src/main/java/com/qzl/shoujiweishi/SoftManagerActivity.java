@@ -243,6 +243,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
             case R.id.ll_popuwindow_share:
                 //分享
                 System.out.println("分享");
+                share();
                 break;
             case R.id.ll_popuwindow_detail:
                 //详情
@@ -254,6 +255,26 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
         }
         //隐藏Popuwindow
         hidePopuwindow();
+    }
+
+    /**
+     * 分享应用
+     */
+    private void share() {
+        /**
+         *  Intent
+         {
+         act=android.intent.action.SEND
+         typ=text/plain
+         flg=0x3000000
+         cmp=com.android.mms/.ui.ComposeMessageActivity (has extras)   intent中包含信息
+         } from pid 228
+         */
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.SEND");
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT,"发现一个很牛X的软件"+appInfo.getPackagName()+"下载地址：www.baidu.com,自己去找");
+        startActivity(intent);
     }
 
     /**
