@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.qzl.shoujiweishi.bean.AppInfo;
 import com.qzl.shoujiweishi.engine.AppEngine;
 import com.qzl.shoujiweishi.utils.AppUtil;
+import com.qzl.shoujiweishi.utils.DensityUtil;
 import com.qzl.shoujiweishi.utils.MyAsycnTask;
 
 import java.util.ArrayList;
@@ -129,7 +130,8 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
                 int y = location[1];
                 //parent:要挂在在哪个控件上
                 // gravity，x,y:控制控件显示的位置
-                popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,x+50,y);
+                //50 px(像素)  dp—》px
+                popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,x+ DensityUtil.dip2qx(getApplicationContext(),50),y);
                 //6 设置动画
                 //缩放动画
                 //前四个：控制控件由没有变成有 动画0：没有  1： 整个控件

@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:qzl="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--ScrollView：只能有一个子控件-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- layout_gravity : 设置控件在父控件中的位置 
-    	 gravity : 设置控件内的内容的位置
-    	 layout_marginTop : 距离某控件的距离
-    	 paddingTop : 距离控件内边框的距离,距离textview控件内顶边框的距离
-    -->
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="设置中心" 
-        android:background="#8866ff00"
-        android:gravity="center_horizontal"
-        android:textSize="22sp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        />
-	<com.qzl.shoujiweishi.ui.SettingView
-	    android:id="@+id/sv_setting_update"
-	    android:layout_width="match_parent"
-        qzl:text="提示更新"
-        qzl:des_on="提示更新已打开"
-        qzl:des_off="提示更新已关闭"
-	    android:layout_height="wrap_content" />
+        <!-- layout_gravity : 设置控件在父控件中的位置
+             gravity : 设置控件内的内容的位置
+             layout_marginTop : 距离某控件的距离
+             paddingTop : 距离控件内边框的距离,距离textview控件内顶边框的距离
+        -->
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#8866ff00"
+            android:gravity="center_horizontal"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="设置中心"
+            android:textSize="22sp" />
 
-    <com.qzl.shoujiweishi.ui.SettingView
-        android:id="@+id/sv_setting_address"
-        android:layout_width="match_parent"
-        qzl:text="显示号码归属地"
-        qzl:des_on="打开显示号码归属地"
-        qzl:des_off="关闭显示号码归属地"
-        android:layout_height="wrap_content" />
-    <com.qzl.shoujiweishi.ui.SettingClickView
-        android:id="@+id/scv_setting_changedbg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <com.qzl.shoujiweishi.ui.SettingClickView
-        android:id="@+id/scv_setting_location_toast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <com.qzl.shoujiweishi.ui.SettingView
-        android:id="@+id/sv_setting_blacknum"
-        android:layout_width="match_parent"
-        qzl:text="黑名单拦截"
-        qzl:des_on="打开黑名单拦截"
-        qzl:des_off="关闭黑名单拦截"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <com.qzl.shoujiweishi.ui.SettingView
+            android:id="@+id/sv_setting_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            qzl:des_off="提示更新已关闭"
+            qzl:des_on="提示更新已打开"
+            qzl:text="提示更新" />
+
+        <com.qzl.shoujiweishi.ui.SettingView
+            android:id="@+id/sv_setting_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            qzl:des_off="关闭显示号码归属地"
+            qzl:des_on="打开显示号码归属地"
+            qzl:text="显示号码归属地" />
+
+        <com.qzl.shoujiweishi.ui.SettingClickView
+            android:id="@+id/scv_setting_changedbg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.qzl.shoujiweishi.ui.SettingClickView
+            android:id="@+id/scv_setting_location_toast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.qzl.shoujiweishi.ui.SettingView
+            android:id="@+id/sv_setting_blacknum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            qzl:des_off="关闭黑名单拦截"
+            qzl:des_on="打开黑名单拦截"
+            qzl:text="黑名单拦截" />
+    </LinearLayout>
+</ScrollView>
