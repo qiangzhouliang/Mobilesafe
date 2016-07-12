@@ -2,6 +2,7 @@ package com.qzl.shoujiweishi;
 
 import android.app.ActivityManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.qzl.shoujiweishi.bean.TaskInfo;
 import com.qzl.shoujiweishi.engine.TaskEngine;
 import com.qzl.shoujiweishi.utils.MyAsycnTask;
+import com.qzl.shoujiweishi.utils.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class TaskManagerActivity extends AppCompatActivity {
     private List<TaskInfo> systemappinfo;
     private MyAdapter myAdapter;
     private TaskInfo taskInfo;
+    private TextView tv_taskmanager_process;
+    private TextView tv_taskmanager_freeandtotalram;
+    private int processCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +48,43 @@ public class TaskManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_manager);
         lv_taskmanager_processes = (ListView) findViewById(R.id.lv_taskmanager_processes);
         loading = (ProgressBar) findViewById(R.id.loading);
+        tv_taskmanager_process = (TextView) findViewById(R.id.tv_taskmanager_process);
+        tv_taskmanager_freeandtotalram = (TextView) findViewById(R.id.tv_taskmanager_freeandtotalram);
+
+        //设置显示数据
+        //获取相应的数据
+        //获取当前运行的进程个数
+        processCount = TaskUtil.getProcessCount(getApplicationContext());
+        tv_taskmanager_process.setText("运行中的进程：\n"+ processCount +"个");
+        //剩余内存和总内存
+        freeandtotaoRam();
+
         //加载数据
         fillData();
         //listView的条目点击事件
         listViewItemClick();
+    }
+
+    /**
+     * 剩余内存和总内存
+     */
+    private void freeandtotaoRam() {
+        //获取剩余，总内存
+        long availableRam = TaskUtil.getAcailableRam(getApplicationContext());
+        //数据转化
+        String availaRam = Formatter.formatFileSize(getApplicationContext(),availableRam);
+        //根据不同的SDK版本去调运不同的方法
+        // 1 获取当前的sdk版本
+        int sdkVersion = Build.VERSION.SDK_INT;
+        long totalRam;
+        if(sdkVersion >= 16) {
+            totalRam = TaskUtil.getTotalRam(getApplicationContext());
+        }else {
+            totalRam = TaskUtil.getTotalRam();
+        }
+        //数据转化
+        String totalram = Formatter.formatFileSize(getApplicationContext(),totalRam);
+        tv_taskmanager_freeandtotalram.setText("剩余/总内存：\n"+availaRam+"/"+totalram);
     }
 
     /**
@@ -202,6 +240,11 @@ public class TaskManagerActivity extends AppCompatActivity {
         //数据转换
         String deletesize = Formatter.formatFileSize(getApplicationContext(),memory);
         Toast.makeText(getApplicationContext(), "共清理"+deleteTaskInos.size()+"个进程，释放"+deletesize+"内存空间", Toast.LENGTH_SHORT).show();
+        //更改运行中的进程个数以及剩余总内存
+        processCount = processCount - deleteTaskInos.size();
+        tv_taskmanager_process.setText("运行中进程：\n"+processCount+"个");
+        //更改剩余和总内存,重新获取剩余总内存
+        freeandtotaoRam();
         //为下次清理进程做准备
         deleteTaskInos.clear();
         deleteTaskInos = null;
@@ -214,6 +257,7 @@ public class TaskManagerActivity extends AppCompatActivity {
      * @param view
      */
     public void setting(View view) {
+
     }
 
     private class MyAdapter extends BaseAdapter {
