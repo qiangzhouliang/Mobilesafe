@@ -64,11 +64,14 @@ public class MyWidget extends AppWidgetProvider {
 		super.onRestored(context, oldWidgetIds, newWidgetIds);
 	}
 
+	//当更更新时间到了，会调运次方法
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		System.out.println("onUpdate");
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
+		//开启更新服务
+		Intent intent = new Intent(context, WidgetService.class);
+		context.startService(intent);
 	}
-	
 }
