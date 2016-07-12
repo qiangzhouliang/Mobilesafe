@@ -10,15 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.widget.RemoteViews;
 
 import com.qzl.shoujiweishi.R;
 import com.qzl.shoujiweishi.receiver.MyWidget;
 import com.qzl.shoujiweishi.utils.TaskUtil;
 
-import java.sql.Time;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,15 +27,14 @@ public class WidgetService extends Service {
 
     private AppWidgetManager appWidgetManager;
     private WidgetReceiver widgetReceiver;
+    private Timer timer;
 
     public WidgetService() {
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
     /**
      * 清理进程的广播接受者
      */
@@ -78,7 +74,6 @@ public class WidgetService extends Service {
         //注册广播接受者
         registerReceiver(widgetReceiver,intentFilter);
 
-
         //widget的管理者
         appWidgetManager = AppWidgetManager.getInstance(this);
         //更新操作
@@ -100,7 +95,7 @@ public class WidgetService extends Service {
         }.start();*/
         //第二种方式
         //计数器
-        Timer timer = new Timer();
+        timer = new Timer();
         //执行操作
         //task：要执行操作
         // when: 延迟时间
@@ -139,6 +134,11 @@ public class WidgetService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        //停止更新widget
+        if (timer != null){
+            timer.cancel();
+            timer = null;
+        }
         //注销清理进程的广播接受者
         if(widgetReceiver != null){
             unregisterReceiver(widgetReceiver);
