@@ -41,7 +41,8 @@ public class TaskManagerActivity extends AppCompatActivity {
     private TextView tv_taskmanager_process;
     private TextView tv_taskmanager_freeandtotalram;
     private int processCount;
-
+    //是否显示系统进程的标识
+    private boolean isshowSystem = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -257,7 +258,10 @@ public class TaskManagerActivity extends AppCompatActivity {
      * @param view
      */
     public void setting(View view) {
-
+        //true 改为false，false 改为true
+        isshowSystem = !isshowSystem;
+        //更新界面
+        myAdapter.notifyDataSetChanged();
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -265,7 +269,7 @@ public class TaskManagerActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             //list.size() = userappinfo.size() + systemappinfo.size();
-            return userappinfo.size() + systemappinfo.size() + 2;
+            return isshowSystem == true?userappinfo.size() + 1 + systemappinfo.size() + 1:userappinfo.size() + 1;
         }
         //获取条目对应的数据
         @Override
