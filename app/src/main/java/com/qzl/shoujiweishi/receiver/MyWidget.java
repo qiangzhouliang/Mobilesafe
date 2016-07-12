@@ -7,6 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.qzl.shoujiweishi.service.WidgetService;
+
+/**
+ * 桌面小控件
+ */
 public class MyWidget extends AppWidgetProvider {
 
 	@Override
@@ -24,16 +29,26 @@ public class MyWidget extends AppWidgetProvider {
 		super.onDeleted(context, appWidgetIds);
 	}
 
+	//删除最后一个的时候会调用的方法
 	@Override
 	public void onDisabled(Context context) {
 		System.out.println("onDisabled");
 		super.onDisabled(context);
+		Intent intent = new Intent(context,WidgetService.class);
+		context.stopService(intent);
 	}
 
+	/**
+	 * 第一次创建的时候调运
+	 * @param context
+     */
 	@Override
 	public void onEnabled(Context context) {
 		System.out.println("onEnabled");
 		super.onEnabled(context);
+		//开启更新服务
+		Intent intent = new Intent(context, WidgetService.class);
+		context.startService(intent);
 	}
 
 	@Override
