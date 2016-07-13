@@ -96,4 +96,5 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
             System.out.println(blackNumInfo.toString());
         }
     }
+
 }

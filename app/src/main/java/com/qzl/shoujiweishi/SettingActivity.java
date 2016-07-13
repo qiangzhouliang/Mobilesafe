@@ -190,8 +190,7 @@ public class SettingActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingActivity.this,
-                        AddressServices.class);
+                Intent intent = new Intent(SettingActivity.this, AddressServices.class);
                 // 根据checkbox的状态设置描述信息的状态
                 // isChecked() : 之前的状态
                 if (sv_setting_address.isChecked()) {
@@ -216,9 +215,11 @@ public class SettingActivity extends Activity {
         // sv_setting_update.setTitle("提示更新");
         // defValue : 缺省的值
         if (sp.getBoolean("update", true)) {
+            System.out.println("打开提示更新");
             sv_setting_update.setDes("打开提示更新");
             sv_setting_update.setChecked(true);
         } else {
+            System.out.println("关闭提示更新");
             sv_setting_update.setDes("关闭提示更新");
             sv_setting_update.setChecked(false);
         }
@@ -227,7 +228,6 @@ public class SettingActivity extends Activity {
         // 而不会执行条目的点击事件
         // 问题2:没有保存用户点击操作
         sv_setting_update.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Editor edit = sp.edit();
