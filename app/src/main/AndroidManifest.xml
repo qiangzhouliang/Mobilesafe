@@ -74,8 +74,17 @@
         <activity android:name=".CallSmsSafeActivity" />
         <activity android:name=".SoftManagerActivity" />
         <activity android:name=".TaskManagerActivity" />
-        <activity android:name=".WatchDogActivity"/>
+        <activity android:name=".WatchDogActivity"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"/>
+        <!--
+        standard:标准的启动模式
+        singleTop：如果activity在栈顶的话，直接启用，不在创建
+        singleTask：如果任务栈中有此activity，将之前的移出，置顶
+        singleInstance：将activity单独存放在一个任务栈中
 
+        excludeFromRecents:是否在最近列表中显示
+        -->
         <receiver
             android:name=".receiver.BootCompleteReceiver"
             android:enabled="true"
