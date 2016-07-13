@@ -54,6 +54,7 @@ public class WatchDogService extends Service {
 							//弹出解锁界面
 							Intent intent = new Intent(WatchDogService.this, WatchDogActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.putExtra("packageName",packageName);
 							startActivity(intent);
 						}
 					}
