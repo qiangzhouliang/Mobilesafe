@@ -116,8 +116,13 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
                     viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.unlock);
                 }else {
                     //加锁操作
-                    watchDogDao.addLockApp(appInfo.getPackagName());
-                    viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.lock);
+                    //判断如果是当前应用程序，就不要加锁
+                    if (!appInfo.getPackagName().equals(getPackageName())) {
+                        watchDogDao.addLockApp(appInfo.getPackagName());
+                        viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.lock);
+                    }else {
+                        Toast.makeText(getApplicationContext(), "当前应用程序不能加锁", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 //更新界面
                 //myAdapter.notifyDataSetChanged();//更新全部

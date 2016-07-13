@@ -58,5 +58,12 @@
             qzl:des_off="关闭黑名单拦截"
             qzl:des_on="打开黑名单拦截"
             qzl:text="黑名单拦截" />
+        <com.qzl.shoujiweishi.ui.SettingView
+            android:id="@+id/sv_setting_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            qzl:des_off="关闭软件锁"
+            qzl:des_on="打开软件锁"
+            qzl:text="软件锁" />
     </LinearLayout>
 </ScrollView>

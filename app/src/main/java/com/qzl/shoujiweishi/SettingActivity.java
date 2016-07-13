@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 
 import com.qzl.shoujiweishi.service.AddressServices;
 import com.qzl.shoujiweishi.service.BlackNumService;
+import com.qzl.shoujiweishi.service.WatchDogService;
 import com.qzl.shoujiweishi.ui.SettingClickView;
 import com.qzl.shoujiweishi.ui.SettingView;
 import com.qzl.shoujiweishi.utils.AddressUtils;
@@ -24,6 +25,7 @@ public class SettingActivity extends Activity {
     private SettingClickView scv_setting_changedbg;
     private SettingClickView scv_setting_location;
     private SettingView sv_setting_blacknum;
+    private SettingView sv_setting_lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class SettingActivity extends Activity {
         scv_setting_changedbg = (SettingClickView) findViewById(R.id.scv_setting_changedbg);
         scv_setting_location = (SettingClickView) findViewById(R.id.scv_setting_location_toast);
         sv_setting_blacknum = (SettingView) findViewById(R.id.sv_setting_blacknum);
+        sv_setting_lock = (SettingView) findViewById(R.id.sv_setting_lock);
 
         update();
         changedbg();
@@ -126,12 +129,45 @@ public class SettingActivity extends Activity {
         super.onStart();
         address();
         blackNum();
+        lock();
+    }
+
+    /**
+     * 软件锁的操作
+     */
+    private void lock() {
+        // 动态的获取服务是否开启
+        if (AddressUtils.isRunningService("com.qzl.shoujiweishi.service.WatchDogService", getApplicationContext())) {
+            // 开启服务
+            sv_setting_lock.setChecked(true);
+        } else {
+            // 关闭服务
+            sv_setting_lock.setChecked(false);
+        }
+        sv_setting_lock.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingActivity.this, WatchDogService.class);
+                // 根据checkbox的状态设置描述信息的状态
+                // isChecked() : 之前的状态
+                if (sv_setting_lock.isChecked()) {
+                    // 关闭提示更新
+                    stopService(intent);
+                    // 更新checkbox的状态
+                    sv_setting_lock.setChecked(false);
+                } else {
+                    // 打开提示更新
+                    startService(intent);
+                    sv_setting_lock.setChecked(true);
+                }
+            }
+        });
     }
 
     // activity不可见的时候调用
     @Override
     protected void onStop() {
-        // TODO Auto-generated method stub
         super.onStop();
     }
 
@@ -141,7 +177,7 @@ public class SettingActivity extends Activity {
     private void blackNum() {
         // 动态的获取服务是否开启
         if (AddressUtils.isRunningService(
-                "com.itheima.mobliesafe75.service.BlackNumService",
+                "com.qzl.shoujiweishi.service.BlackNumService",
                 getApplicationContext())) {
             // 开启服务
             sv_setting_blacknum.setChecked(true);
@@ -178,7 +214,7 @@ public class SettingActivity extends Activity {
         // 回显操作
         // 动态的获取服务是否开启
         if (AddressUtils.isRunningService(
-                "com.itheima.mobliesafe75.service.AddressService",
+                "com.qzl.shoujiweishi.service.AddressServices",
                 getApplicationContext())) {
             // 开启服务
             sv_setting_address.setChecked(true);
@@ -216,11 +252,11 @@ public class SettingActivity extends Activity {
         // defValue : 缺省的值
         if (sp.getBoolean("update", true)) {
             System.out.println("打开提示更新");
-            sv_setting_update.setDes("打开提示更新");
+            //sv_setting_update.setDes("打开提示更新");
             sv_setting_update.setChecked(true);
         } else {
             System.out.println("关闭提示更新");
-            sv_setting_update.setDes("关闭提示更新");
+            //sv_setting_update.setDes("关闭提示更新");
             sv_setting_update.setChecked(false);
         }
         // 设置自定义组合控件的点击事件
@@ -242,6 +278,7 @@ public class SettingActivity extends Activity {
                     // edit.apply();//保存到文件中,但是仅限于9版本之上,9版本之下保存到内存中的
                 } else {
                     // 打开提示更新
+                    System.out.println("打开提示更新");
                     // sv_setting_update.setDes("打开提示更新");
                     sv_setting_update.setChecked(true);
                     // 保存状态
