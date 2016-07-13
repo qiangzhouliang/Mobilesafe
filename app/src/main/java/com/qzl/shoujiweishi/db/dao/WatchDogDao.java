@@ -31,7 +31,7 @@ public class WatchDogDao {
     /**
      * 添加应用程序包名
      */
-    private void addLockApp(String packagename){
+    public void addLockApp(String packagename){
         synchronized (b){
             //1. 获取数据库
             SQLiteDatabase database = watchDogOpenHelper.getWritableDatabase();
@@ -75,7 +75,7 @@ public class WatchDogDao {
     /**
      *删除包名
      */
-    public void deleteBlackNum(String packagename){
+    public void deletePackageName(String packagename){
         //1 获取数据库
         SQLiteDatabase database = watchDogOpenHelper.getWritableDatabase();
         //2 删除数据

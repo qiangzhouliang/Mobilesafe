@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qzl.shoujiweishi.bean.AppInfo;
+import com.qzl.shoujiweishi.db.dao.WatchDogDao;
 import com.qzl.shoujiweishi.engine.AppEngine;
 import com.qzl.shoujiweishi.utils.AppUtil;
 import com.qzl.shoujiweishi.utils.DensityUtil;
@@ -52,11 +53,13 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
     private MyAdapter myAdapter;
     private TextView tv_softmanager_rom;
     private TextView tv_softmanager_sd;
+    private WatchDogDao watchDogDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_soft_manager);
+        watchDogDao = new WatchDogDao(getApplicationContext());
         //初始化控件
         lv_softmanager_application = (ListView) findViewById(R.id.lv_softmanager_application);
         loading = (ProgressBar) findViewById(R.id.loading);
@@ -78,6 +81,50 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
         listViewOnscroll();
         //listView条目的点击事件
         listViewItemOnclick();
+        //listView长按效果
+        listViewItemLongClick();
+    }
+
+    /**
+     *长按点击事件
+     */
+    private void listViewItemLongClick() {
+        lv_softmanager_application.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("长按点击事件");
+                //加锁解锁操作
+                //屏蔽用户和系统程序（。。。个），不能进行加锁解锁操作的
+                if(position == 0 || position == userappinfo.size()+1){
+                    return true;
+                }
+                //获取数据
+                if(position <= (userappinfo.size())){
+                    //用户程序中获取
+                    appInfo = userappinfo.get(position-1);
+                }else {
+                    //系统程序中获取
+                    appInfo = systemappinfo.get(position - userappinfo.size() - 2);
+                }
+                //加锁解锁操作
+                ViewHolder viewHolder = (ViewHolder) view.getTag();
+                //判断应用程序有没有加锁，有的话解锁，没有的话，加锁
+                if(watchDogDao.queryLockApp(appInfo.getPackagName())){
+                    //解锁操作
+                    watchDogDao.deletePackageName(appInfo.getPackagName());
+                    //更新单个条目
+                    viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.unlock);
+                }else {
+                    //加锁操作
+                    watchDogDao.addLockApp(appInfo.getPackagName());
+                    viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.lock);
+                }
+                //更新界面
+                //myAdapter.notifyDataSetChanged();//更新全部
+                //true:表示执行，false：表示拦截
+                return true;
+            }
+        });
     }
 
     /**
@@ -409,6 +456,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
                 viewHolder.tv_softmanager_name = (TextView) view.findViewById(R.id.tv_softmanager_name);
                 viewHolder.tv_softmanager_isSD = (TextView) view.findViewById(R.id.tv_softmanager_isSD);
                 viewHolder.tv_softmanager_version = (TextView) view.findViewById(R.id.tv_softmanager_version);
+                viewHolder.iv_itemsoftmanager_islock = (ImageView) view.findViewById(R.id.iv_itemsoftmanager_islock);
                 //将viewholder和view对象绑定
                 view.setTag(viewHolder);
             }
@@ -431,6 +479,14 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
                 viewHolder.tv_softmanager_isSD.setText("手机内存");
             }
             viewHolder.tv_softmanager_version.setText(appInfo.getVersionName());
+            //判断应用程序是加锁还是外加锁
+            if(watchDogDao.queryLockApp(appInfo.getPackagName())){
+                //加锁
+                viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.lock);
+            }else {
+                //解锁
+                viewHolder.iv_itemsoftmanager_islock.setImageResource(R.drawable.unlock);
+            }
             return view;
         }
     }
@@ -439,7 +495,7 @@ public class SoftManagerActivity extends AppCompatActivity implements View.OnCli
      * 控件容器
      */
     static class ViewHolder{
-        ImageView iv_itemsoftmanager_icon;
+        ImageView iv_itemsoftmanager_icon,iv_itemsoftmanager_islock;
         TextView tv_softmanager_name,tv_softmanager_isSD,tv_softmanager_version;
     }
 
