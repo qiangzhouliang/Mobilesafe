@@ -2,4 +2,8 @@
     <string name="app_name">手机卫士</string>
     <string name="sample_device_admin_description">手机卫士，远程锁屏</string>
     <string name="sample_device_admin">手机卫士</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

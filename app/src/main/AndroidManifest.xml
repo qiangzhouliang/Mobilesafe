@@ -31,8 +31,8 @@
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
 
     <application
         android:allowBackup="true"
@@ -76,9 +76,11 @@
         <activity android:name=".CallSmsSafeActivity" />
         <activity android:name=".SoftManagerActivity" />
         <activity android:name=".TaskManagerActivity" />
-        <activity android:name=".WatchDogActivity"
-            android:launchMode="singleInstance"
-            android:excludeFromRecents="true"/>
+        <activity android:name=".TrafficActivity"/>
+        <activity
+            android:name=".WatchDogActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" />
         <!--
         standard:标准的启动模式
         singleTop：如果activity在栈顶的话，直接启用，不在创建
@@ -146,6 +148,7 @@
             android:enabled="true"
             android:exported="true" />
         <service android:name=".service.WatchDogService" />
+
     </application>
 
 </manifest>

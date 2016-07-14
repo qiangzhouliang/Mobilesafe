@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.qzl.shoujiweishi.HomeActivity"
+    android:orientation="vertical"
+    android:id="@+id/dl">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="流量统计"
+        android:id="@+id/textView"
+        android:background="#8866ff00"
+        android:gravity="center_horizontal"
+        android:textSize="22sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"/>
+    </RelativeLayout>
+    <!--layout_gravity：在布局中决定控件存在的位置-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="#ff8800"></LinearLayout>
+    <!--
+    handle:抽屉的把手
+    content: 抽屉的内容
+    -->
+   <!-- <SlidingDrawer
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:handle="@+id/handle"
+        android:content="@+id/content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/shenmabg"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ff0000"></LinearLayout>
+    </SlidingDrawer>-->
+</android.support.v4.widget.DrawerLayout>

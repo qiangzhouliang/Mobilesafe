@@ -1,6 +1,5 @@
 package com.qzl.shoujiweishi.engine;
 
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,7 +13,6 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.StringReader;
 
 /**
  * Created by Qzl on 2016-07-14.

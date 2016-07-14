@@ -64,6 +64,10 @@ public class HomeActivity extends AppCompatActivity {
                         Intent intent3 = new Intent(HomeActivity.this,TaskManagerActivity.class);
                         startActivity(intent3);
                         break;
+                    case 4://流量统计
+                        Intent intent4 = new Intent(HomeActivity.this,TrafficActivity.class);
+                        startActivity(intent4);
+                        break;
                     case 7:
                         Intent intent7 = new Intent(HomeActivity.this,AToolsActivity.class);
                         startActivity(intent7);
