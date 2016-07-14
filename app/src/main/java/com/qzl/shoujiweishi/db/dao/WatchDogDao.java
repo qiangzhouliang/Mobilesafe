@@ -1,9 +1,11 @@
 package com.qzl.shoujiweishi.db.dao;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import com.qzl.shoujiweishi.bean.BlackNumInfo;
 import com.qzl.shoujiweishi.db.BlackNumOpenHlper;
@@ -19,12 +21,14 @@ public class WatchDogDao {
 
     private WatchDogOpenHelper watchDogOpenHelper;
     private byte[] b = new byte[1024];
+    private Context context;
     /**
      * 在构造函数中获取BlackNumOpenHlper
      * @param context
      */
     public WatchDogDao(Context context) {
         watchDogOpenHelper = new WatchDogOpenHelper(context);
+        this.context = context;
     }
     //增  删  改  查
     //我在同一时刻对数据库既进行读操作，也进行写操作，怎么避免这两个同时操作数据库,同步锁+将WatchDogOpenHelper设置成单例模式
@@ -40,6 +44,15 @@ public class WatchDogDao {
             ContentValues values = new ContentValues();
             values.put("packagename", packagename);
             database.insert(WatchDogOpenHelper.DB_NAME, null, values);
+
+
+            //通知内容观察值数据库变化了
+            ContentResolver contentResolver = context.getContentResolver();
+            //因为是我们自己的数据库发生变化了，所以自定义一个uri进行操作
+            Uri uri = Uri.parse("content://com.qzl.shoujiweishi.lock.changed");
+            //通知内容观察者数据发生变化了
+            contentResolver.notifyChange(uri,null);
+
             //3.关闭数据库，可以防止内存溢出
             database.close();
         }
@@ -83,6 +96,14 @@ public class WatchDogDao {
         //whereClause: 查询条件
         //whereArgus：查询条件的参数
         database.delete(BlackNumOpenHlper.DB_NAME,"packagename=?",new String[]{packagename});
+
+        //通知内容观察值数据库变化了
+        ContentResolver contentResolver = context.getContentResolver();
+        //因为是我们自己的数据库发生变化了，所以自定义一个uri进行操作
+        Uri uri = Uri.parse("content://com.qzl.shoujiweishi.lock.changed");
+        //通知内容观察者数据发生变化了
+        contentResolver.notifyChange(uri,null);
+        
         //3 关闭数据库
         database.close();
     }

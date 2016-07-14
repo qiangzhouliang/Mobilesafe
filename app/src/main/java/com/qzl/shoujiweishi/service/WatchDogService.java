@@ -10,6 +10,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 
@@ -23,6 +25,7 @@ public class WatchDogService extends Service {
 	private UnLockCurrentReceiver unLockCurrentReceiver;
 	private String unlockcurrentPackagName;
 	private ScreenOffReceiver screenOffReceiver;
+	private List<String> list;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -53,6 +56,18 @@ public class WatchDogService extends Service {
 		isLock = true;
 		new Thread(){
 			public void run() {
+				//先将数据库中的数据查询存放到内存中，然后再把数据从内存中取出来进行操作
+				//当数据库变化的时候，重新更新内存中的数据，当数据库变化的时候，通知内容观察者数据库变化了，然后在内容观察者中去更新最新数据
+				Uri uri = Uri.parse("content://com.qzl.shoujiweishi.lock.changed");
+				//notifyForDescendents:匹配规则：true：精确匹配，false ：模糊匹配
+				getContentResolver().registerContentObserver(uri, true, new ContentObserver(null) {
+					@Override
+					public void onChange(boolean selfChange) {
+						super.onChange(selfChange);
+						//更新数据
+						list = watchDogDao.queryAllLockApp();
+					}
+				});
 				while(isLock){
 					//监听操作
 					//监听用户打开了哪些任务栈,打开哪些应用
@@ -68,8 +83,10 @@ public class WatchDogService extends Service {
 						runningTaskInfo.topActivity;*/
 						String packageName = baseactivity.getPackageName();
 						System.out.println(packageName);
+						//判断list集合中是否包含包名
+						boolean b = list.contains(packageName);
 						//通过查询数据库，如果数据库中有，弹出解锁界面，没有，不做操作
-						if (watchDogDao.queryLockApp(packageName)) {
+						if (b) {
 							if (!packageName.equals(unlockcurrentPackagName)){
 								//弹出解锁界面
 								Intent intent = new Intent(WatchDogService.this, WatchDogActivity.class);
