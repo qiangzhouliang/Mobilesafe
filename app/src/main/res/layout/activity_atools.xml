@@ -28,5 +28,19 @@
         android:text="查询号码归属地"
         android:drawableLeft="@android:drawable/ic_menu_edit"
         android:onClick="queryAddress"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_bg"
+        android:text="短信备份"
+        android:drawableLeft="@android:drawable/ic_menu_edit"
+        android:onClick="backupams"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_bg"
+        android:text="短信还原"
+        android:drawableLeft="@android:drawable/ic_menu_edit"
+        android:onClick="restoresms"/>
 
 </LinearLayout>

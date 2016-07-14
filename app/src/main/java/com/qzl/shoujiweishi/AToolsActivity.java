@@ -18,4 +18,21 @@ public class AToolsActivity extends AppCompatActivity {
         Intent intent = new Intent(AToolsActivity.this,AddressActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * 备份短信
+     * @param view
+     */
+    public void backupams(View view) {
+        //1 读取短信
+        //2 备份短信
+    }
+
+    /**
+     * 还原短信备份
+     * @param view
+     */
+    public void restoresms(View view) {
+
+    }
 }

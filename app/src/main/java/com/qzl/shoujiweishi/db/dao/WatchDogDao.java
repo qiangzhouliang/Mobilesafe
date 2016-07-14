@@ -103,7 +103,7 @@ public class WatchDogDao {
         Uri uri = Uri.parse("content://com.qzl.shoujiweishi.lock.changed");
         //通知内容观察者数据发生变化了
         contentResolver.notifyChange(uri,null);
-        
+
         //3 关闭数据库
         database.close();
     }
