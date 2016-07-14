@@ -1,5 +1,6 @@
 package com.qzl.shoujiweishi.engine;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,7 +20,7 @@ public class SmsEngine {
     /**
      * 获取短信的操作
      */
-    public static void getAllSMS(Context context) {
+    public static void getAllSMS(Context context, ShowProgress showProgress) {
         //1 获取短信
         //1.1 获取内容解析者
         ContentResolver resolver = context.getContentResolver();
@@ -32,7 +33,11 @@ public class SmsEngine {
         //delectionArgs:查询条件的参数
         //sortOrder：排序
         Cursor cursor = resolver.query(uri, new String[]{"address", "date", "type", "body"}, null, null, null);
-
+        //设置最大进度
+        int count = cursor.getCount();//获取短信条数
+        showProgress.setMax(count);
+        //设置当前进度
+        int progress = 0;
         //2 备份短信
         // 2.1 获取xml序列器
         XmlSerializer xmlSerializer = Xml.newSerializer();
@@ -74,6 +79,8 @@ public class SmsEngine {
 
                 xmlSerializer.endTag(null,"sms");
                 System.out.println("address:" + address + "  date:" + date + "   type:" + type + "    body:" + body);
+                progress++;
+                showProgress.setProgress(progress);
                 //2.8 间数据刷新到xml文件中
                 xmlSerializer.flush();
             }
@@ -83,4 +90,13 @@ public class SmsEngine {
             e.printStackTrace();
         }
     }
+
+    //1 创建一个数字
+    public interface ShowProgress{
+        //设置最大进度
+        public void setMax(int max);
+        //设置当前进度
+        public void setProgress(int progress);
+    }
+    // 2 给刷子
 }

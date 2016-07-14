@@ -1,5 +1,6 @@
 package com.qzl.shoujiweishi;
 
+import android.app.ProgressDialog;
 import android.test.AndroidTestCase;
 
 import com.qzl.shoujiweishi.engine.SmsEngine;
@@ -9,6 +10,6 @@ import com.qzl.shoujiweishi.engine.SmsEngine;
  */
 public class SMSTest extends AndroidTestCase {
     public void testSms(){
-        SmsEngine.getAllSMS(getContext());
+        //SmsEngine.getAllSMS(getContext());
     }
 }
