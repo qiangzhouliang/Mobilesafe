@@ -2,16 +2,19 @@ package com.qzl.shoujiweishi.engine;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Xml;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Created by Qzl on 2016-07-14.
@@ -91,6 +94,54 @@ public class SmsEngine {
         }
     }
 
+    public static void parseXMLWithPull(Context context){
+        //解析XML
+        XmlPullParser xmlPullParser = Xml.newPullParser();
+        try {
+            xmlPullParser.setInput(new FileInputStream(new File("/mnt/sdcard/backupsms.xml")), "utf-8");
+
+            int eventType = xmlPullParser.getEventType();
+            String address = "";
+            String date = "";
+            String type = "";
+            String body = "";
+            while (eventType != XmlPullParser.END_DOCUMENT){
+                String nodeName = xmlPullParser.getName();
+                switch (eventType){
+                    //开始解析某个节点
+                    case XmlPullParser.START_TAG: {
+                        if ("address".equals(nodeName)) {
+                            address = xmlPullParser.nextText();
+                        } else if ("date".equals(nodeName)) {
+                            date = xmlPullParser.nextText();
+                        } else if ("type".equals(nodeName)) {
+                            type = xmlPullParser.nextText();
+                        } else if ("body".equals(nodeName)) {
+                            body = xmlPullParser.nextText();
+                        }
+                        break;
+                    }
+                    case XmlPullParser.END_TAG:
+                        if ("sms".equals(nodeName)){
+                            System.out.println("address:" + address + "  date:" + date + "   type:" + type + "    body:" + body);
+                            //插入短信的操作
+                            ContentResolver resolver = context.getContentResolver();
+                            Uri uri = Uri.parse("content://sms");
+                            ContentValues values = new ContentValues();
+                            values.put("address",address);
+                            values.put("date", date);
+                            values.put("type",type);
+                            values.put("body",body);
+                            resolver.insert(uri,values);
+                        }
+                        break;
+                }
+                eventType = xmlPullParser.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     //1 创建一个数字
     public interface ShowProgress{
         //设置最大进度

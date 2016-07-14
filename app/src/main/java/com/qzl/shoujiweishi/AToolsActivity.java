@@ -1,12 +1,20 @@
 package com.qzl.shoujiweishi;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Xml;
 import android.view.View;
+import android.widget.Toast;
 
 import com.qzl.shoujiweishi.engine.SmsEngine;
+
+import org.xmlpull.v1.XmlPullParser;
 
 public class AToolsActivity extends AppCompatActivity {
 
@@ -63,6 +71,8 @@ public class AToolsActivity extends AppCompatActivity {
      * @param view
      */
     public void restoresms(View view) {
-
+        //解析XML
+        SmsEngine.parseXMLWithPull(getApplicationContext());
+        Toast.makeText(getApplicationContext(), "短信还原完成...", Toast.LENGTH_SHORT).show();
     }
 }

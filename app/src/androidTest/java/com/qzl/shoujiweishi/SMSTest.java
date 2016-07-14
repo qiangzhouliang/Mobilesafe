@@ -12,4 +12,7 @@ public class SMSTest extends AndroidTestCase {
     public void testSms(){
         //SmsEngine.getAllSMS(getContext());
     }
+    public void testparseXMLWithPull(){
+        SmsEngine.parseXMLWithPull(getContext());
+    }
 }
