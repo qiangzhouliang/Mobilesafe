@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qzl.shoujiweishi.HomeActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.qzl.shoujiweishi.HomeActivity">
     <!--layout_gravity : 设置控件在父控件中的位置
         gravity ： 设置控件内的内容位置
         layout_marginTop : 距离某控件的距离
@@ -12,41 +12,44 @@
     -->
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="手机杀毒"
-        android:id="@+id/textView"
         android:background="#8866ff00"
         android:gravity="center_horizontal"
-        android:textSize="22sp"
+        android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"/>
+        android:text="手机杀毒"
+        android:textSize="22sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/iv_antivirus_anitimageview"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_scanner_malware"/>
+            android:src="@drawable/ic_scanner_malware" />
+
         <ImageView
             android:id="@+id/iv_antivirus_scanner"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_margin="10dp"
-            android:src="@drawable/act_scanning_03"/>
+            android:src="@drawable/act_scanning_03" />
 
         <TextView
             android:id="@+id/tv_antivirus_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="正在扫描"
-            android:layout_toRightOf="@id/iv_antivirus_anitimageview"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="25dp"
-            android:textSize="18sp"
-            android:layout_marginRight="15dp"/>
+            android:layout_toRightOf="@id/iv_antivirus_anitimageview"
+            android:singleLine="true"
+            android:text="正在扫描"
+            android:textSize="18sp" />
 
         <ProgressBar
             android:id="@+id/pb_antivirus_progressbar"
@@ -54,10 +57,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_antivirus_text"
-            android:layout_toRightOf="@id/iv_antivirus_anitimageview"
-            android:layout_marginTop="5dp"
             android:layout_marginRight="15dp"
-            android:progressDrawable="@drawable/progerssbar_antivirus_bg"
-            android:progress="30"/>
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/iv_antivirus_anitimageview"
+            android:progress="30"
+            android:progressDrawable="@drawable/progerssbar_antivirus_bg" />
     </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_antivirus_safeapks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
