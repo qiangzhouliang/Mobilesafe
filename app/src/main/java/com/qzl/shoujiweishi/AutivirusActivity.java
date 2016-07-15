@@ -2,6 +2,7 @@ package com.qzl.shoujiweishi;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.qzl.shoujiweishi.utils.MD5Util;
 
 import java.util.List;
 
@@ -64,12 +67,12 @@ public class AutivirusActivity extends AppCompatActivity {
                 //延迟100毫秒，让用户看到这个操作
                 SystemClock.sleep(100);
                 //2 获取所有安装应用程序信息
-                List<PackageInfo> installedPackages = pm.getInstalledPackages(0);
+                List<PackageInfo> installedPackages = pm.getInstalledPackages(PackageManager.GET_SIGNATURES);
                 // 3.1 设置进度条最大进度
                 int count = 0;
                 pb_antivirus_progressbar.setMax(installedPackages.size());
                 // 3.2 设置当前进度
-                for (PackageInfo pasckageInfo : installedPackages) {
+                for (final PackageInfo pasckageInfo : installedPackages) {
                     SystemClock.sleep(100);
                     //3 设置进度条的最大进度和当前进度
                     count++;
@@ -81,6 +84,12 @@ public class AutivirusActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             tv_antivirus_text.setText("正在扫描："+name);
+                            //7 获取应用程序的签名信息，并加密
+                            Signature[] signatures = pasckageInfo.signatures;//获取应用程序的签名信息,获取签名数组
+                            String charsString = signatures[0].toCharsString();
+                            //对签名信息进行md5加密
+                            String signature = MD5Util.passwordMD5(charsString);
+                            System.out.println(name+"  :"+signature);
                             //6 展示扫描的软件的名称信息
                             TextView textView = new TextView(getApplicationContext());
                             textView.setTextColor(Color.BLACK);
@@ -88,7 +97,7 @@ public class AutivirusActivity extends AppCompatActivity {
                             //textView添加到线性布局中
                             //ll_antivirus_safeapks.addView(textView);
                             ll_antivirus_safeapks.addView(textView,0);//index:表示将textview添加到线性布局的按个位置
-                            
+
                         }
                     });
                 }
