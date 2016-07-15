@@ -49,16 +49,17 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".SettingActivity" />
         <activity android:name=".LostfindActivity" />
@@ -78,6 +79,7 @@
         <activity android:name=".TaskManagerActivity" />
         <activity android:name=".TrafficActivity" />
         <activity android:name=".AutivirusActivity" />
+        <activity android:name=".ClearCacheActivity"/>
         <activity
             android:name=".WatchDogActivity"
             android:excludeFromRecents="true"
@@ -149,7 +151,6 @@
             android:enabled="true"
             android:exported="true" />
         <service android:name=".service.WatchDogService" />
-
     </application>
 
 </manifest>

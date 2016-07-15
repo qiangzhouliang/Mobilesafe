@@ -128,6 +128,7 @@ public class AutivirusActivity extends AppCompatActivity {
                         if (list.size() > 0) {
                             //有病毒
                             tv_antivirus_text.setText("扫描完成，发现" + list.size() + "个病毒");
+                            tv_antivirus_text.setTextColor(Color.RED);
                             //卸载病毒应用
                             final AlertDialog.Builder builder = new AlertDialog.Builder(AutivirusActivity.this);
                             builder.setTitle("提醒!发现"+list.size()+"个病毒");
