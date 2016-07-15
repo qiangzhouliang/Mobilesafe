@@ -29,10 +29,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //加载布局文件
         setContentView(R.layout.activity_home);
-
-        int i = 3;
-        int y = i/0;
-
         sp = getSharedPreferences("config",MODE_PRIVATE);
         gridView_home_gridview = (GridView) findViewById(R.id.gv_home_gridview);
         gridView_home_gridview.setAdapter(new Myadapter());
