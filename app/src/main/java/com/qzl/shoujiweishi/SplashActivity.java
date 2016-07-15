@@ -203,6 +203,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("splishActivity启动了.....");
         setContentView(R.layout.activity_splash);
         sp = getSharedPreferences("config", MODE_PRIVATE);
         tv_splash_versionname = (TextView) findViewById(R.id.tv_splash_versionname);

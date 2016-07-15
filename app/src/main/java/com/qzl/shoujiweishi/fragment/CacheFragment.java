@@ -1,13 +1,17 @@
 package com.qzl.shoujiweishi.fragment;
 
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,11 +19,14 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qzl.shoujiweishi.R;
 import com.qzl.shoujiweishi.bean.CachInfo;
@@ -38,6 +45,8 @@ public class CacheFragment extends Fragment {
     private ListView lv_cachefragment_caches;
     private List<CachInfo> list;
     private PackageManager pm;
+    private Button btn_cachefragment_clear;
+    private Myadapter myadapter;
 
     public CacheFragment() {
         // Required empty public constructor
@@ -71,6 +80,17 @@ public class CacheFragment extends Fragment {
         tv_cachefragment_text = (TextView) view.findViewById(R.id.tv_cachefragment_text);
         pb_cachefragment_progressbar = (ProgressBar) view.findViewById(R.id.pb_cachefragment_progressbar);
         lv_cachefragment_caches = (ListView) view.findViewById(R.id.lv_cachefragment_caches);
+        btn_cachefragment_clear = (Button) view.findViewById(R.id.btn_cachefragment_clear);
+        lv_cachefragment_caches.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //跳转到详情页面
+                Intent intent = new Intent();
+                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                intent.setData(Uri.parse("package:"+list.get(position).getPackageName()));
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -136,13 +156,46 @@ public class CacheFragment extends Fragment {
                         public void run() {
                             tv_cachefragment_text.setVisibility(View.GONE);
                             pb_cachefragment_progressbar.setVisibility(View.GONE);
+                            myadapter = new Myadapter();
                             //listView设置adapter
-                            lv_cachefragment_caches.setAdapter(new Myadapter());
+                            lv_cachefragment_caches.setAdapter(myadapter);
+                            if(list.size() > 0){
+                                btn_cachefragment_clear.setVisibility(View.VISIBLE);
+                                //清理缓存
+                                btn_cachefragment_clear.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //真正的实现清理缓存
+                                        try {
+                                            Class<?> loadClass = getActivity().getClass().getClassLoader().loadClass("android.content.pm.PackageManager");
+                                            //Long.class  Long     TYPE  long
+                                            Method method = loadClass.getDeclaredMethod("freeStorageAndNotify", Long.TYPE,IPackageDataObserver.class);
+                                            method.invoke(pm, Long.MAX_VALUE,new MyIPackageDataObserver());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        //清理缓存
+                                        list.clear();
+                                        //更新界面
+                                        myadapter.notifyDataSetChanged();
+                                        //隐藏btn
+                                        btn_cachefragment_clear.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
                         }
                     });
                 }
             }
         }.start();
+    }
+
+    private class MyIPackageDataObserver extends IPackageDataObserver.Stub{
+        //当缓存清理完成之后调运的方法
+        @Override
+        public void onRemoveCompleted(String packageName, boolean succeeded) throws RemoteException {
+            Toast.makeText(getActivity(), "清理完成，手机已经变得很干净了，可以流畅使用了...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

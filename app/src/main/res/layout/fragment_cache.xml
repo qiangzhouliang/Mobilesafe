@@ -29,6 +29,14 @@
         android:progress="30"
         android:progressDrawable="@drawable/progerssbar_antivirus_bg" />
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_cachefragment_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="立即清理"
+        android:background="@drawable/button"
+        android:visibility="gone"/>
     <ListView
         android:id="@+id/lv_cachefragment_caches"
         android:layout_width="match_parent"
