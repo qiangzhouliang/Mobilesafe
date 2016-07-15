@@ -1,36 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qzl.shoujiweishi.HomeActivity"
-    android:orientation="vertical">
-    <!--layout_gravity : 设置控件在父控件中的位置
-        gravity ： 设置控件内的内容位置
-        layout_marginTop : 距离某控件的距离
-        paddingTop ：距离控件内边框的距离,距离textView控件内顶边框的距离
+    android:orientation="vertical" >
+
+    <!--
+         layout_gravity : 设置控件在父控件中的位置 
+    	 gravity : 设置控件内的内容的位置
+    	 layout_marginTop : 距离某控件的距离
+    	 paddingTop : 距离控件内边框的距离,距离textview控件内顶边框的距离
     -->
 
     <TextView
+        android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="功能列表"
-        android:id="@+id/textView"
         android:background="#8866ff00"
         android:gravity="center_horizontal"
-        android:textSize="22sp"
+        android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"/>
-
+        android:text="功能列表"
+        android:textSize="22sp" />
     <!--
-        numColumns:设置每行显示的个数
-        verticalSpacing : 设置每行与每行之间的距离
+	    singleLine : 一行显示
+	    ellipsize  
+	    	none :省略后面文字
+	    	start : 隐藏前面的文字
+	    	middle : 隐藏中间的文字
+	    	end : 隐藏后面的文字
+	    	marquee : 滚动
+	    focusableInTouchMode : 触摸获取焦点
+	    TextView天生是没有点击事件和获取焦点的事件
+	    focusable : 是否获取焦点操作,true:可以  false:不可以
+	    marqueeRepeatLimit : 设置滚动次数,marquee_forever : -1  一直滚动
     -->
+
+    <com.qzl.shoujiweishi.ui.HomeTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="手机卫士,真64杀毒引擎,超神速度,打开7次可以召唤神龙,辅助杀毒!!!" />
+
+    <LinearLayout
+        android:id="@+id/adLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+    </LinearLayout>
+    <!--
+         numColumns : 设置每行显示的个数
+    	verticalSpacing : 设置每行之间的距离
+    -->
+
     <GridView
+        android:id="@+id/gv_home_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/gridView_home_gridview"
+        android:layout_marginTop="20dp"
         android:numColumns="3"
-        android:verticalSpacing="10dp"
-        android:layout_marginTop="10dp"/>
+        android:verticalSpacing="10dp" >
+    </GridView>
+
 </LinearLayout>

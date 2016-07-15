@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
         //加载布局文件
         setContentView(R.layout.activity_home);
         sp = getSharedPreferences("config",MODE_PRIVATE);
-        gridView_home_gridview = (GridView) findViewById(R.id.gridView_home_gridview);
+        gridView_home_gridview = (GridView) findViewById(R.id.gv_home_gridview);
         gridView_home_gridview.setAdapter(new Myadapter());
         gridView_home_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
                     case 2://软件管理
                         Intent intent2 = new Intent(HomeActivity.this,SoftManagerActivity.class);
                         startActivity(intent2);
-                    break;
+                        break;
                     case 3://进程管理
                         Intent intent3 = new Intent(HomeActivity.this,TaskManagerActivity.class);
                         startActivity(intent3);
@@ -67,6 +67,10 @@ public class HomeActivity extends AppCompatActivity {
                     case 4://流量统计
                         Intent intent4 = new Intent(HomeActivity.this,TrafficActivity.class);
                         startActivity(intent4);
+                        break;
+                    case 5://手机杀毒
+                        Intent intent5 = new Intent(HomeActivity.this,AutivirusActivity.class);
+                        startActivity(intent5);
                         break;
                     case 7:
                         Intent intent7 = new Intent(HomeActivity.this,AToolsActivity.class);
