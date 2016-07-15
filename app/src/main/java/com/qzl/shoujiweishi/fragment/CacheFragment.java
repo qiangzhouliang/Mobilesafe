@@ -1,12 +1,15 @@
 package com.qzl.shoujiweishi.fragment;
 
 
+import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageStats;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 
 import com.qzl.shoujiweishi.R;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -89,6 +93,18 @@ public class CacheFragment extends Fragment {
                     //设置进度条最大进度和当前进度
                     count++;
                     pb_cachefragment_progressbar.setProgress(count);
+
+                    //获取缓存大小
+                    //反射获取缓存
+                    try {
+                        Class<?> loadClass = getActivity().getClass().getClassLoader().loadClass("android.content.pm.PackageManager");
+                        Method method = loadClass.getDeclaredMethod("getPackageSizeInfo", String.class,IPackageStatsObserver.class);
+                        //receiver : 类的实例,隐藏参数,方法不是静态的必须指定
+                        method.invoke(pm, packageInfo.packageName,mStatsObserver);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     //设置扫描显示的应用名称
                     final String name = packageInfo.applicationInfo.loadLabel(pm).toString();
                     if (getActivity() != null) {
@@ -112,4 +128,21 @@ public class CacheFragment extends Fragment {
             }
         }.start();
     }
+
+    /**
+     * 获取缓存大小的操作
+     */
+    IPackageStatsObserver.Stub mStatsObserver = new IPackageStatsObserver.Stub() {
+        public void onGetStatsCompleted(PackageStats stats, boolean succeeded) {
+            long cachesize = stats.cacheSize;//缓存大小
+            long codesize = stats.codeSize;//应用程序的大小
+            long datasize = stats.dataSize;//数据大小
+
+            String cache = Formatter.formatFileSize(getActivity(), cachesize);
+            String code = Formatter.formatFileSize(getActivity(), codesize);
+            String data = Formatter.formatFileSize(getActivity(), datasize);
+
+            System.out.println(stats.packageName+"cachesize:"+cache +" codesize:"+code+" datasize:"+data);
+        }
+    };
 }
